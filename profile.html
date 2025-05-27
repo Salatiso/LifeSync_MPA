@@ -4,70 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="profile.title">My LifeSync Profile</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="/LifeSync/assets/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/6e1faf1efd.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <video id="video-background" autoplay muted loop>
-        <source src="assets/videos/Abstract_Plexus.mp4" type="video/mp4">
-    </video>
-    <nav>
-        <a href="index.html" class="nav-brand"><i class="fa-solid fa-heart-pulse"></i> <span data-i18n="nav.brand">LifeSync</span></a>
-        <div class="nav-links">
-            <a href="index.html"><i class="fa-solid fa-home"></i> <span data-i18n="nav.home">Home</span></a>
-            <a href="assessments.html"><i class="fa-solid fa-clipboard-check"></i> <span data-i18n="nav.assessments">Assessments</span></a>
-            <a href="tools.html"><i class="fa-solid fa-tools"></i> <span data-i18n="nav.tools">Tools</span></a>
-            <a href="resources.html"><i class="fa-solid fa-book-open"></i> <span data-i18n="nav.resources">Resources</span></a>
-            <a href="ugq.html"><i class="fa-solid fa-question-circle"></i> <span data-i18n="nav.ugq">My Questions</span></a>
-            <a href="profile.html" id="navProfileBtn" class="active-nav"><i class="fa-solid fa-user-edit"></i> <span data-i18n="nav.profile">My Profile</span></a>
-            <a href="sync.html"><i class="fa-solid fa-sync-alt"></i> <span data-i18n="nav.sync">Couple Sync</span></a>
-            <button class="auth-button login-btn" id="loginBtnNav" data-i18n="nav.login">Login</button>
-            <button class="auth-button" id="registerBtnNav" data-i18n="nav.register">Register</button>
-            <button class="auth-button" id="logoutBtnNav" style="display: none;" data-i18n="nav.logout">Logout</button>
-            <select id="languageSelector">
-                <option value="en">English</option>
-                <option value="xh">Xhosa</option>
-                <option value="zu">Zulu</option>
-                <option value="af">Afrikaans</option>
-            </select>
-        </div>
-    </nav>
-    <main>
-        <section id="profile" class="mx-auto max-w-4xl">
-            <h1 class="text-center" data-i18n="profile.title">My LifeSync Profile</h1>
-            <p class="text-center mb-6" data-i18n="profile.subtitle">This is your personal space. Manage your details, track your progress, and control your sharing preferences.</p>
-            <div id="profileCompletionContainer" class="mb-6">
-                <h3 data-i18n="profile.completionTitle">Profile Completion</h3>
-                <div id="profileCompletionBarContainer">
-                    <span id="profileCompletionBar"></span>
-                </div>
-                <p id="profileCompletionPercentageText"></p>
-                <p id="profileCompletionHint" class="text-center"></p>
+    <header>
+        <nav>
+            <a href="/LifeSync/index.html" class="nav-brand" data-i18n="nav.brand">LifeSync</a>
+            <div class="nav-links">
+                <a href="/LifeSync/index.html" data-i18n="nav.home">Home</a>
+                <a href="/LifeSync/assessments.html" data-i18n="nav.assessments">Assessments</a>
+                <a href="/LifeSync/tools.html" data-i18n="nav.tools">Tools</a>
+                <a href="/LifeSync/resources.html" data-i18n="nav.resources">Resources</a>
+                <a href="/LifeSync/ugq.html" data-i18n="nav.ugq">My Questions</a>
+                <a href="/LifeSync/profile.html" class="active-nav" data-i18n="nav.profile" id="navProfileBtn">My Profile</a>
+                <a href="/LifeSync/sync.html" data-i18n="nav.sync">Couple Sync</a>
+                <button class="btn btn-secondary" id="loginBtnNav" data-i18n="nav.login">Login</button>
+                <button class="btn btn-primary" id="registerBtnNav" data-i18n="nav.register">Register</button>
+                <button class="btn btn-secondary" id="logoutBtnNav" style="display: none;" data-i18n="nav.logout">Logout</button>
             </div>
-            <div class="form-section">
+            <div class="language-selector">
+                <select id="languageSelector">
+                    <option value="en">English</option>
+                    <option value="xh">Xhosa</option>
+                    <option value="zu">Zulu</option>
+                    <option value="af">Afrikaans</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="profile">
+            <h2 class="section-title" data-i18n="profile.title">My LifeSync Profile</h2>
+            <p class="section-subtitle" data-i18n="profile.subtitle">This is your personal space. Manage your details, track your progress, and control your sharing preferences.</p>
+
+            <div class="assessment-container">
+                <h3 data-i18n="profile.completionTitle">Profile Completion</h3>
+                <div class="profile-completion">
+                    <div id="profileCompletionBar"></div>
+                    <p id="profileCompletionPercentageText">0%</p>
+                    <p id="profileCompletionHint" data-i18n="profile.completionHint">Complete more assessments and add details to increase your profile score!</p>
+                </div>
+            </div>
+
+            <div class="assessment-container">
                 <h3 data-i18n="profile.basicInfoTitle">Basic Information</h3>
+                <img src="https://via.placeholder.com/100" id="profileImagePreview" alt="Profile Picture">
+                <p data-i18n="profile.uploadPicture">Upload Picture</p>
+                <input type="file" id="profileImageUpload" accept="image/*">
+                <p data-i18n="profile.avatarComingSoon">(Avatars coming soon)</p>
                 <div id="profileInfo"></div>
                 <form id="profileForm">
-                    <div class="form-field-group">
-                        <label for="profileImageUpload" data-i18n="profile.uploadPicture">Upload Picture</label>
-                        <div id="profileImagePreview" class="profileImagePreviewStyle">
-                            <i class="fa-solid fa-camera"></i>
-                        </div>
-                        <input type="file" id="profileImageUpload" accept="image/*">
-                        <p class="text-center italic" data-i18n="profile.avatarComingSoon">(Avatars coming soon)</p>
-                    </div>
-                    <div class="form-field-group flex items-center">
-                        <input type="checkbox" id="makePublic" class="form-checkbox mr-2">
-                        <label for="makePublic" data-i18n="profile.makePublic">Make Profile Public (to registered users)</label>
-                    </div>
-                    <div class="form-field-group">
+                    <div class="form-group">
                         <label for="dob" data-i18n="profile.dobLabel">Date of Birth:</label>
-                        <input type="date" id="dob" class="input-field">
+                        <input type="date" id="dob">
                     </div>
-                    <div class="form-field-group">
+                    <div class="form-group">
                         <label for="gender" data-i18n="profile.genderLabel">Gender:</label>
-                        <select id="gender" class="input-field">
+                        <select id="gender">
                             <option value="" data-i18n="profile.selectOption">Select...</option>
                             <option value="male" data-i18n="profile.genderMale">Male</option>
                             <option value="female" data-i18n="profile.genderFemale">Female</option>
@@ -76,176 +72,190 @@
                             <option value="prefer-not-to-say" data-i18n="profile.genderPreferNot">Prefer not to say</option>
                         </select>
                     </div>
-                    <div class="form-field-group">
+                    <div class="form-group">
                         <label for="location" data-i18n="profile.locationLabel">Location (City, Country):</label>
-                        <input type="text" id="location" class="input-field" data-i18n-placeholder="profile.locationPlaceholder">
+                        <input type="text" id="location" data-i18n-placeholder="profile.locationPlaceholder">
                     </div>
-                    <h3 data-i18n="profile.lifestyleTitle">Lifestyle & Interests</h3>
-                    <div class="form-field-group">
+                    <h4 data-i18n="profile.lifestyleTitle">Lifestyle & Interests</h4>
+                    <div class="form-group">
                         <label for="hobbies" data-i18n="profile.hobbiesLabel">Hobbies & Interests (comma-separated):</label>
-                        <input type="text" id="hobbies" class="input-field" data-i18n-placeholder="profile.hobbiesPlaceholder">
+                        <input type="text" id="hobbies" data-i18n-placeholder="profile.hobbiesPlaceholder">
                     </div>
-                    <div class="form-field-group">
+                    <div class="form-group">
                         <label for="education" data-i18n="profile.educationLabel">Education Level:</label>
-                        <input type="text" id="education" class="input-field" data-i18n-placeholder="profile.educationPlaceholder">
+                        <input type="text" id="education" data-i18n-placeholder="profile.educationPlaceholder">
                     </div>
-                    <div class="form-field-group">
+                    <div class="form-group">
                         <label for="occupation" data-i18n="profile.occupationLabel">Occupation/Profession:</label>
-                        <input type="text" id="occupation" class="input-field" data-i18n-placeholder="profile.occupationPlaceholder">
+                        <input type="text" id="occupation" data-i18n-placeholder="profile.occupationPlaceholder">
                     </div>
-                    <div class="form-field-group">
+                    <div class="form-group">
                         <label for="aboutMe" data-i18n="profile.aboutMeLabel">About Me (Short Bio):</label>
-                        <textarea id="aboutMe" class="input-field" data-i18n-placeholder="profile.aboutMePlaceholder"></textarea>
+                        <textarea id="aboutMe" data-i18n-placeholder="profile.aboutMePlaceholder"></textarea>
                     </div>
-                    <input type="submit" class="btn btn-primary w-full" data-i18n="profile.saveProfileBtn">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="makePublic">
+                            <span data-i18n="profile.makePublic">Make Profile Public (to registered users)</span>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" data-i18n="profile.saveProfileBtn">Save Profile Details</button>
                 </form>
             </div>
-            <div class="form-section">
+
+            <div class="assessment-container">
                 <h3 data-i18n="profile.importTitle">Import Your Data:</h3>
                 <p data-i18n="profile.importInstructionsSocial">Upload your data file (e.g., LinkedIn ZIP, Facebook JSON) to enhance your profile.</p>
-                <div class="form-field-group">
-                    <input type="file" id="socialDataImport" accept=".json,.zip">
-                    <button id="importSocialDataBtn" class="btn btn-primary w-full mt-2" data-i18n="profile.importBtnSocial">Import Social/Dating Data</button>
-                </div>
-                <p data-i18n="profile.importInstructionsAI">Use AI to extract info from documents (e.g., CV). Process externally, then upload the generated JSON.</p>
-                <div class="form-field-group">
+                <input type="file" id="socialDataImport">
+                <button class="btn btn-primary" id="importSocialDataBtn" data-i18n="profile.importBtnSocial">Import Social/Dating Data</button>
+                <p class="mt-3" data-i18n="profile.importInstructionsAI">Use AI to extract info from documents (e.g., CV). Process externally, then upload the generated JSON.</p>
+                <div class="form-group">
                     <label for="aiDataImport" data-i18n="profile.aiUploadLabel">Upload AI-Processed JSON:</label>
                     <input type="file" id="aiDataImport" accept=".json">
-                    <button id="importAIDataBtn" class="btn btn-primary w-full mt-2" data-i18n="profile.importBtnAI">Import AI Processed Data</button>
                 </div>
-                <p class="italic" data-i18n="profile.aiToolNote">Note: Use tools like Gemini, Grok, etc., to process your documents into a structured JSON first.</p>
+                <button class="btn btn-primary" id="importAIDataBtn" data-i18n="profile.importBtnAI">Import AI Processed Data</button>
+                <p data-i18n="profile.aiToolNote">Note: Use tools like Gemini, Grok, etc., to process your documents into a structured JSON first.</p>
             </div>
-            <h2 class="mt-6" data-i18n="profile.assessmentsTitle">Completed Assessments:</h2>
-            <ul id="profileAssessmentsList" class="mt-4"></ul>
-            <h2 class="mt-6" data-i18n="profile.partnersTitle">Synced Partners:</h2>
-            <ul id="profileSyncedPartners" class="mt-4">
-                <li data-i18n="profile.noPartners">No partner synced yet.</li>
-            </ul>
-            <div class="text-center mt-4">
-                <a href="sync.html" class="btn btn-primary" data-i18n="profile.connectBtn">Connect with Partner</a>
+
+            <div class="assessment-container">
+                <h3 data-i18n="profile.assessmentsTitle">Completed Assessments:</h3>
+                <ul id="profileAssessmentsList"></ul>
             </div>
-            <h2 class="mt-6" data-i18n="profile.dataTitle">Assessment Profile Data & Preferences:</h2>
-            <p class="mt-4" id="profileData" data-i18n="profile.dataNote">This section shows data from your completed assessments.</p>
+
+            <div class="assessment-container">
+                <h3 data-i18n="profile.partnersTitle">Synced Partners:</h3>
+                <p id="syncedPartnersList" data-i18n="profile.noPartners">No partner synced yet.</p>
+                <a href="/LifeSync/sync.html" class="btn btn-primary" data-i18n="profile.connectBtn">Connect with Partner</a>
+            </div>
+
+            <div class="assessment-container">
+                <h3 data-i18n="profile.dataTitle">Assessment Profile Data & Preferences:</h3>
+                <p data-i18n="profile.dataNote">This section shows data from your completed assessments.</p>
+            </div>
+
+            <div class="assessment-container">
+                <h3 data-i18n="profile.ugqTitleLong">My Questions</h3>
+                <ul id="profileUgqList"></ul>
+                <a href="/LifeSync/ugq.html" class="btn btn-primary" data-i18n="nav.ugq">Create More Questions</a>
+            </div>
         </section>
     </main>
+
     <!-- Modals -->
-    <div id="loginModal" class="modal">
+    <div class="modal" id="loginModal">
         <div class="modal-content">
             <span class="close-button">×</span>
             <h2 data-i18n="login.title">Login to LifeSync</h2>
             <p data-i18n="login.subtitle">Access your profile, assessments, and synced data.</p>
             <form id="loginForm">
-                <div class="form-field-group">
+                <div class="form-group">
                     <label for="loginEmail" data-i18n="login.emailLabel">Email:</label>
-                    <input type="email" id="loginEmail" class="input-field" required data-i18n-placeholder="login.emailPlaceholder">
+                    <input type="email" id="loginEmail" required data-i18n-placeholder="login.emailPlaceholder">
                 </div>
-                <div class="form-field-group">
+                <div class="form-group">
                     <label for="loginPassword" data-i18n="login.passwordLabel">Password:</label>
-                    <input type="password" id="loginPassword" class="input-field" required data-i18n-placeholder="login.passwordPlaceholder">
+                    <input type="password" id="loginPassword" required data-i18n-placeholder="login.passwordPlaceholder">
                 </div>
-                <input type="submit" class="btn btn-primary w-full" data-i18n="login.submit">
+                <button type="submit" class="btn btn-primary" data-i18n="login.submit">Login</button>
+                <button type="button" class="btn btn-secondary" id="loginWithGoogleBtn" data-i18n="login.google">Login with Google</button>
             </form>
-            <button id="loginWithGoogleBtn" class="btn btn-secondary w-full mt-3" data-i18n="login.google">Login with Google</button>
-            <p class="mt-3 text-center" data-i18n="login.tempProfilePrompt">Don't want to sign in? Try LifeSync with a temporary profile:</p>
-            <button id="createTempProfileFromLoginModalBtn" class="btn btn-purple btn-sm w-full" data-i18n="login.tempProfileBtn">Create Temporary Profile</button>
-            <button id="loginWithTempProfileModalBtn" class="btn btn-purple btn-sm w-full mt-2" data-i18n="login.loginTempProfileBtn">Login with Temporary Code</button>
+            <p data-i18n="login.tempProfilePrompt">Don't want to sign in? Try LifeSync with a temporary profile:</p>
+            <button class="btn btn-secondary" id="createTempProfileFromLoginModalBtn" data-i18n="login.tempProfileBtn">Create Temporary Profile</button>
+            <button class="btn btn-secondary" id="loginWithTempProfileModalBtn" data-i18n="login.loginTempProfileBtn">Login with Temporary Code</button>
         </div>
     </div>
-    <div id="registerModal" class="modal">
+
+    <div class="modal" id="registerModal">
         <div class="modal-content">
             <span class="close-button">×</span>
             <h2 data-i18n="register.title">Create Your LifeSync Account</h2>
             <p data-i18n="register.subtitle">Start building your insightful relationship profile.</p>
             <form id="registerForm">
-                <div class="form-field-group">
+                <div class="form-group">
                     <label for="registerName" data-i18n="register.nameLabel">Name:</label>
-                    <input type="text" id="registerName" class="input-field" required data-i18n-placeholder="register.namePlaceholder">
+                    <input type="text" id="registerName" required data-i18n-placeholder="register.namePlaceholder">
                 </div>
-                <div class="form-field-group">
+                <div class="form-group">
                     <label for="registerEmail" data-i18n="register.emailLabel">Email:</label>
-                    <input type="email" id="registerEmail" class="input-field" required data-i18n-placeholder="register.emailPlaceholder">
+                    <input type="email" id="registerEmail" required data-i18n-placeholder="register.emailPlaceholder">
                 </div>
-                <div class="form-field-group">
+                <div class="form-group">
                     <label for="registerPassword" data-i18n="register.passwordLabel">Password:</label>
-                    <input type="password" id="registerPassword" class="input-field" required data-i18n-placeholder="register.passwordPlaceholder">
+                    <input type="password" id="registerPassword" required data-i18n-placeholder="register.passwordPlaceholder">
                 </div>
-                <input type="submit" class="btn btn-primary w-full" data-i18n="register.submit">
+                <button type="submit" class="btn btn-primary" data-i18n="register.submit">Register</button>
+                <button type="button" class="btn btn-secondary" id="registerWithGoogleBtn" data-i18n="register.google">Register with Google</button>
             </form>
-            <button id="registerWithGoogleBtn" class="btn btn-secondary w-full mt-3" data-i18n="register.google">Register with Google</button>
         </div>
     </div>
-    <div id="tempProfileModal" class="modal">
+
+    <div class="modal" id="tempProfileModal">
         <div class="modal-content">
             <span class="close-button">×</span>
             <h2 data-i18n="tempProfile.title">Create Temporary Profile</h2>
             <p data-i18n="tempProfile.subtitle">Create a temporary profile to explore LifeSync for 90 days.</p>
             <form id="tempProfileForm">
-                <div class="form-field-group">
+                <div class="form-group">
                     <label for="tempUsername" data-i18n="tempProfile.usernameLabel">Username:</label>
-                    <input type="text" id="tempUsername" class="input-field" required data-i18n-placeholder="tempProfile.usernamePlaceholder">
+                    <input type="text" id="tempUsername" required data-i18n-placeholder="tempProfile.usernamePlaceholder">
                 </div>
-                <input type="submit" class="btn btn-primary w-full" data-i18n="tempProfile.createBtn">
+                <button type="submit" class="btn btn-primary" data-i18n="tempProfile.createBtn">Create Profile</button>
             </form>
             <div id="tempProfileCodeSection" style="display: none;">
                 <p data-i18n="tempProfile.codeInstructions">Your temporary profile has been created! Use this code to log in:</p>
-                <p id="tempProfileCode" class="text-center font-bold"></p>
+                <p><strong id="tempProfileCode"></strong></p>
                 <p data-i18n="tempProfile.expiryNote">This profile will expire in 90 days. Save your username and code securely!</p>
-                <button id="tempProfileGotItBtn" class="btn btn-primary w-full" data-i18n="tempProfile.gotItBtn">I've Saved It!</button>
+                <button class="btn btn-primary" id="tempProfileGotItBtn" data-i18n="tempProfile.gotItBtn">I've Saved It!</button>
             </div>
         </div>
     </div>
-    <div id="tempProfileLoginModal" class="modal">
+
+    <div class="modal" id="tempProfileLoginModal">
         <div class="modal-content">
             <span class="close-button">×</span>
             <h2 data-i18n="tempProfileLogin.title">Login with Temporary Profile</h2>
             <form id="tempProfileLoginForm">
-                <div class="form-field-group">
+                <div class="form-group">
                     <label for="tempLoginUsername" data-i18n="tempProfileLogin.usernameLabel">Username:</label>
-                    <input type="text" id="tempLoginUsername" class="input-field" required data-i18n-placeholder="tempProfileLogin.usernamePlaceholder">
+                    <input type="text" id="tempLoginUsername" required data-i18n-placeholder="tempProfileLogin.usernamePlaceholder">
                 </div>
-                <div class="form-field-group">
+                <div class="form-group">
                     <label for="tempLoginCode" data-i18n="tempProfileLogin.codeLabel">Code:</label>
-                    <input type="text" id="tempLoginCode" class="input-field" required data-i18n-placeholder="tempProfileLogin.codePlaceholder">
+                    <input type="text" id="tempLoginCode" required data-i18n-placeholder="tempProfileLogin.codePlaceholder">
                 </div>
-                <input type="submit" class="btn btn-primary w-full" data-i18n="tempProfileLogin.submit">
+                <button type="submit" class="btn btn-primary" data-i18n="tempProfileLogin.submit">Login</button>
             </form>
         </div>
     </div>
-    <div id="searchModal" class="modal">
+
+    <div class="modal" id="searchModal">
         <div class="modal-content">
             <span class="close-button">×</span>
             <h2 data-i18n="search.title">Search LifeSync</h2>
             <form id="searchForm">
-                <div class="form-field-group">
-                    <input type="text" id="searchInput" class="input-field w-full" data-i18n-placeholder="search.placeholder" required>
+                <div class="form-group">
+                    <input type="text" id="searchInput" required data-i18n-placeholder="search.placeholder">
                 </div>
-                <input type="submit" class="btn btn-primary w-full" data-i18n="search.submit">
+                <button type="submit" class="btn btn-primary" data-i18n="search.submit">Search</button>
             </form>
+            <div id="searchResults"></div>
         </div>
     </div>
-    <div id="benefitModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">×</span>
-            <h2 id="benefitModalTitle"></h2>
-            <p id="benefitModalDescription"></p>
-            <button id="benefitModalCloseBtn" class="btn btn-primary w-full" data-i18n="landing.learnMoreClose">Close</button>
-        </div>
-    </div>
-    <div id="notificationsArea" class="notifications-area"></div>
-    <button id="globalSearchTriggerBtn" title="Search"><i class="fa-solid fa-search"></i></button>
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="loading-spinner"></div>
-    </div>
+
+    <div id="notificationsArea"></div>
+    <div id="loadingOverlay"></div>
+
     <footer>
         <p>
             <a href="#" data-i18n="footer.privacy">Privacy Policy</a> | 
-            <a href="#" data-i18n="footer.terms">Terms of Service</a> | 
-            <span data-i18n="footer.built">Built with <i class="fa-solid fa-heart" style="color: var(--accent-pink-vibrant)"></i> for LifeSync.</span> 
-            © <span id="currentYearFooter"></span>
+            <a href="#" data-i18n="footer.terms">Terms of Service</a>
         </p>
+        <p data-i18n="footer.built">Built with ♥ for LifeSync.</p>
+        <p>© <span id="currentYearFooter"></span> LifeSync</p>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/i18next@21.6.10/dist/umd/i18next.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@6.1.2/dist/umd/i18nextBrowserLanguageDetector.min.js"></script>
-    <script src="assets/js/main.js" type="module"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/i18next@21.6.10/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@6.1.2/i18nextBrowserLanguageDetector.min.js"></script>
+    <script type="module" src="/LifeSync/assets/js/main.js"></script>
 </body>
 </html>
