@@ -1,1 +1,202 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="title">LifeSync - Deepen Your Connections</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/6e1faf1efd.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <video id="video-background" autoplay muted loop>
+        <source src="assets/videos/Abstract_Plexus.mp4" type="video/mp4">
+    </video>
+    <nav>
+        <a href="index.html" class="nav-brand"><i class="fa-solid fa-heart-pulse"></i> <span data-i18n="nav.brand">LifeSync</span></a>
+        <div class="nav-links">
+            <a href="index.html" class="active-nav"><i class="fa-solid fa-home"></i> <span data-i18n="nav.home">Home</span></a>
+            <a href="assessments.html"><i class="fa-solid fa-clipboard-check"></i> <span data-i18n="nav.assessments">Assessments</span></a>
+            <a href="tools.html"><i class="fa-solid fa-tools"></i> <span data-i18n="nav.tools">Tools</span></a>
+            <a href="resources.html"><i class="fa-solid fa-book-open"></i> <span data-i18n="nav.resources">Resources</span></a>
+            <a href="ugq.html"><i class="fa-solid fa-question-circle"></i> <span data-i18n="nav.ugq">My Questions</span></a>
+            <a href="profile.html" id="navProfileBtn"><i class="fa-solid fa-user-edit"></i> <span data-i18n="nav.profile">My Profile</span></a>
+            <a href="sync.html"><i class="fa-solid fa-sync-alt"></i> <span data-i18n="nav.sync">Couple Sync</span></a>
+            <button class="auth-button login-btn" id="loginBtnNav" data-i18n="nav.login">Login</button>
+            <button class="auth-button" id="registerBtnNav" data-i18n="nav.register">Register</button>
+            <button class="auth-button" id="logoutBtnNav" style="display: none;" data-i18n="nav.logout">Logout</button>
+            <select id="languageSelector">
+                <option value="en">English</option>
+                <option value="xh">Xhosa</option>
+                <option value="zu">Zulu</option>
+                <option value="af">Afrikaans</option>
+            </select>
+        </div>
+    </nav>
+    <main>
+        <section id="about">
+            <div class="hero-section">
+                <h1 data-i18n="landing.heroTitle">Beyond the Swipe: Discover True Compatibility</h1>
+                <p class="subtitle" data-i18n="landing.heroSubtitle">LifeSync empowers you to understand yourself and what you truly need in any significant relationship...</p>
+                <a href="assessments.html" class="btn btn-primary" data-i18n="landing.heroCta">Explore Assessments</a>
+            </div>
+            <div class="benefits-title-section">
+                <h2 data-i18n="landing.benefitsTitle">Why LifeSync? The Path to Deeper Understanding.</h2>
+                <p data-i18n="landing.benefitsSubtitle">LifeSync is more than an app; it's your companion for relationship clarity and growth.</p>
+            </div>
+            <div class="benefits-background-container">
+                <svg class="benefits-background-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="var(--accent-teal-bright)" d="M44.7,-76.4C58.9,-69.5,71.7,-57.4,78.2,-42.3C84.7,-27.2,84.9,-9.6,80.7,6.2C76.5,22,67.8,36,56.5,48.2C45.2,60.4,31.2,70.8,15.6,75.7C0,80.6,-17.2,80,-32.9,74.2C-48.6,68.4,-62.8,57.5,-72.2,43.2C-81.6,28.9,-86.2,11.5,-84.2,-4.7C-82.2,-20.9,-73.6,-35.9,-63.1,-49.2C-52.6,-62.5,-40.2,-74.2,-26.7,-79.2C-13.2,-84.2,1.5,-82.5,15.9,-76.9C30.3,-71.3,43.5,-61.8,44.7,-76.4Z" transform="translate(100 100)" />
+                </svg>
+                <div class="benefits-grid">
+                    <div class="benefit-card" data-benefit="benefit1">
+                        <i class="fa-solid fa-user-circle"></i>
+                        <h3 data-i18n="landing.benefit1.title">Build Your Lifelong Profile</h3>
+                        <p data-i18n="landing.benefit1.description">Create a rich, evolving profile that captures your values...</p>
+                    </div>
+                    <div class="benefit-card" data-benefit="benefit2">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <h3 data-i18n="landing.benefit2.title">Understand Yourself Deeper</h3>
+                        <p data-i18n="landing.benefit2.description">Engage with 150+ culturally aware questions...</p>
+                    </div>
+                    <div class="benefit-card" data-benefit="benefit3">
+                        <i class="fa-solid fa-handshake"></i>
+                        <h3 data-i18n="landing.benefit3.title">Ready to 'Sync Up'?</h3>
+                        <p data-i18n="landing.benefit3.description">Connect with a partner on a new level...</p>
+                    </div>
+                    <div class="benefit-card" data-benefit="benefitImport">
+                        <i class="fa-solid fa-file-import"></i>
+                        <h3 data-i18n="landing.benefitImport.title">Seamless Profile Building</h3>
+                        <p data-i18n="landing.benefitImport.description">Easily import data from existing social/dating profiles...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="landing-cta-section">
+                <h2 data-i18n="landing.getStartedTitle">Ready to Begin Your Journey?</h2>
+                <p data-i18n="landing.getStartedSubtitle">Create your free LifeSync profile today...</p>
+                <button class="btn btn-primary" id="registerBtnCta" data-i18n="landing.registerNow">Register Your Profile</button>
+                <button class="btn btn-secondary" id="loginBtnCta" data-i18n="landing.loginExisting">Login</button>
+            </div>
+        </section>
+    </main>
+    <!-- Modals -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 data-i18n="login.title">Login to LifeSync</h2>
+            <p data-i18n="login.subtitle">Access your profile, assessments, and synced data.</p>
+            <form id="loginForm">
+                <div class="form-field-group">
+                    <label for="loginEmail" data-i18n="login.emailLabel">Email:</label>
+                    <input type="email" id="loginEmail" class="input-field" required data-i18n-placeholder="login.emailPlaceholder">
+                </div>
+                <div class="form-field-group">
+                    <label for="loginPassword" data-i18n="login.passwordLabel">Password:</label>
+                    <input type="password" id="loginPassword" class="input-field" required data-i18n-placeholder="login.passwordPlaceholder">
+                </div>
+                <input type="submit" class="btn btn-primary w-full" data-i18n="login.submit">
+            </form>
+            <button id="loginWithGoogleBtn" class="btn btn-secondary w-full mt-3" data-i18n="login.google">Login with Google</button>
+            <p class="mt-3 text-center" data-i18n="login.tempProfilePrompt">Don't want to sign in? Try LifeSync with a temporary profile:</p>
+            <button id="createTempProfileFromLoginModalBtn" class="btn btn-purple btn-sm w-full" data-i18n="login.tempProfileBtn">Create Temporary Profile</button>
+            <button id="loginWithTempProfileModalBtn" class="btn btn-purple btn-sm w-full mt-2" data-i18n="login.loginTempProfileBtn">Login with Temporary Code</button>
+        </div>
+    </div>
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 data-i18n="register.title">Create Your LifeSync Account</h2>
+            <p data-i18n="register.subtitle">Start building your insightful relationship profile.</p>
+            <form id="registerForm">
+                <div class="form-field-group">
+                    <label for="registerName" data-i18n="register.nameLabel">Name:</label>
+                    <input type="text" id="registerName" class="input-field" required data-i18n-placeholder="register.namePlaceholder">
+                </div>
+                <div class="form-field-group">
+                    <label for="registerEmail" data-i18n="register.emailLabel">Email:</label>
+                    <input type="email" id="registerEmail" class="input-field" required data-i18n-placeholder="register.emailPlaceholder">
+                </div>
+                <div class="form-field-group">
+                    <label for="registerPassword" data-i18n="register.passwordLabel">Password:</label>
+                    <input type="password" id="registerPassword" class="input-field" required data-i18n-placeholder="register.passwordPlaceholder">
+                </div>
+                <input type="submit" class="btn btn-primary w-full" data-i18n="register.submit">
+            </form>
+            <button id="registerWithGoogleBtn" class="btn btn-secondary w-full mt-3" data-i18n="register.google">Register with Google</button>
+        </div>
+    </div>
+    <div id="tempProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 data-i18n="tempProfile.title">Create Temporary Profile</h2>
+            <p data-i18n="tempProfile.subtitle">Create a temporary profile to explore LifeSync for 90 days.</p>
+            <form id="tempProfileForm">
+                <div class="form-field-group">
+                    <label for="tempUsername" data-i18n="tempProfile.usernameLabel">Username:</label>
+                    <input type="text" id="tempUsername" class="input-field" required data-i18n-placeholder="tempProfile.usernamePlaceholder">
+                </div>
+                <input type="submit" class="btn btn-primary w-full" data-i18n="tempProfile.createBtn">
+            </form>
+            <div id="tempProfileCodeSection" style="display: none;">
+                <p data-i18n="tempProfile.codeInstructions">Your temporary profile has been created! Use this code to log in:</p>
+                <p id="tempProfileCode" class="text-center font-bold"></p>
+                <p data-i18n="tempProfile.expiryNote">This profile will expire in 90 days. Save your username and code securely!</p>
+                <button id="tempProfileGotItBtn" class="btn btn-primary w-full" data-i18n="tempProfile.gotItBtn">I've Saved It!</button>
+            </div>
+        </div>
+    </div>
+    <div id="tempProfileLoginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 data-i18n="tempProfileLogin.title">Login with Temporary Profile</h2>
+            <form id="tempProfileLoginForm">
+                <div class="form-field-group">
+                    <label for="tempLoginUsername" data-i18n="tempProfileLogin.usernameLabel">Username:</label>
+                    <input type="text" id="tempLoginUsername" class="input-field" required data-i18n-placeholder="tempProfileLogin.usernamePlaceholder">
+                </div>
+                <div class="form-field-group">
+                    <label for="tempLoginCode" data-i18n="tempProfileLogin.codeLabel">Code:</label>
+                    <input type="text" id="tempLoginCode" class="input-field" required data-i18n-placeholder="tempProfileLogin.codePlaceholder">
+                </div>
+                <input type="submit" class="btn btn-primary w-full" data-i18n="tempProfileLogin.submit">
+            </form>
+        </div>
+    </div>
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 data-i18n="search.title">Search LifeSync</h2>
+            <form id="searchForm">
+                <div class="form-field-group">
+                    <input type="text" id="searchInput" class="input-field w-full" data-i18n-placeholder="search.placeholder" required>
+                </div>
+                <input type="submit" class="btn btn-primary w-full" data-i18n="search.submit">
+            </form>
+        </div>
+    </div>
+    <div id="benefitModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="benefitModalTitle"></h2>
+            <p id="benefitModalDescription"></p>
+            <button id="benefitModalCloseBtn" class="btn btn-primary w-full" data-i18n="landing.learnMoreClose">Close</button>
+        </div>
+    </div>
+    <div id="notificationsArea" class="notifications-area"></div>
+    <button id="globalSearchTriggerBtn" title="Search"><i class="fa-solid fa-search"></i></button>
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    <footer>
+        <p>
+            <a href="#" data-i18n="footer.privacy">Privacy Policy</a> | 
+            <a href="#" data-i18n="footer.terms">Terms of Service</a> | 
+            <span data-i18n="footer.built">Built with <i class="fa-solid fa-heart" style="color: var(--accent-pink-vibrant)"></i> for LifeSync.</span> 
+            &copy; <span id="currentYearFooter"></span>
+        </p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@21.6.10/dist/umd/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@6.1.2/dist/umd/i18nextBrowserLanguageDetector.min.js"></script>
+    <script src="assets/js/main.js" type="module"></script>
+</body>
+</html>
