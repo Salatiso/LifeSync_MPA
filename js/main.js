@@ -1612,3 +1612,118 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('pendingSyncRequests')) displaySyncRequests();
     showNotification(i18next.t('notifications.welcome'), 'info');
 });
+
+// Continuing from the search functionality
+document.getElementById('searchForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+    const searchResults = [];
+    
+    // Search across assessments, resources, and user profiles (if public)
+    if (searchQuery) {
+        // Search assessments (mock implementation; expand as needed)
+        const assessmentTitles = [
+            i18next.t('assessments.quickCompat.title'),
+            i18next.t('assessments.profileBuilder.title')
+        ];
+        assessmentTitles.forEach((title, index) => {
+            if (title.toLowerCase().includes(searchQuery)) {
+                searchResults.push({
+                    type: 'assessment',
+                    title: title,
+                    link: 'assessments.html'
+                });
+            }
+        });
+
+        // Search resources
+        const resourceCategories = i18next.t('resources.category', { returnObjects: true });
+        Object.keys(resourceCategories).forEach(catKey => {
+            const items = i18next.t(`resources.${catKey}Desc`, { returnObjects: true });
+            Object.keys(items).forEach(itemKey => {
+                const itemName = i18next.t(`resources.${catKey}Desc.${itemKey}`);
+                if (itemName.toLowerCase().includes(searchQuery)) {
+                    searchResults.push({
+                        type: 'resource',
+                        title: itemName,
+                        link: 'resources.html'
+                    });
+                }
+            });
+        });
+
+        // Display search results (basic implementation)
+        const searchResultsContainer = document.getElementById('searchResults');
+        if (searchResultsContainer) {
+            if (searchResults.length > 0) {
+                searchResultsContainer.innerHTML = searchResults.map(result => `
+                    <div class="search-result-item">
+                        <a href="${result.link}">${result.title}</a>
+                        <p>Type: ${result.type}</p>
+                    </div>
+                `).join('');
+            } else {
+                searchResultsContainer.innerHTML = '<p>No results found.</p>';
+            }
+        }
+    }
+});
+
+// Initialize page-specific logic
+function initializePage() {
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    highlightActiveNavLink();
+
+    if (currentPath === 'index.html' || currentPath === '') {
+        showNotification(i18next.t('notifications.welcome'), 'info');
+    } else if (currentPath === 'assessments.html') {
+        // Assessments page is initialized via event listeners
+    } else if (currentPath === 'resources.html') {
+        displayResources();
+    } else if (currentPath === 'profile.html') {
+        updateProfileDisplay();
+    } else if (currentPath === 'sync.html') {
+        displaySyncRequests();
+    }
+}
+
+// Run initialization
+window.addEventListener('load', () => {
+    initializePage();
+});
+
+// Expose necessary functions to global scope for inline HTML event handlers
+window.startQuickCompat = startQuickCompat;
+window.submitQuickCompatAnswer = submitQuickCompatAnswer;
+window.startProfileBuilder = startProfileBuilder;
+window.submitProfileBuilderAnswer = submitProfileBuilderAnswer;
+window.deleteUgq = deleteUgq;
+
+// Note: Ensure Firebase rules are set appropriately in your Firebase Console
+// Example Firestore rules:
+/*
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    match /tempProfiles/{tempId} {
+      allow read, write: if true; // Adjust for security as needed
+    }
+  }
+}
+*/
+
+// Example Storage rules:
+/*
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /profileImages/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+*/
