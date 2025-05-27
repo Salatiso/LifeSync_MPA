@@ -1,0 +1,101 @@
+LifeSync Compatibility Evaluation Platform - Pitch Document (Revised May 2025)**
+
+**Executive Summary**
+The digital landscape excels at connecting individuals, but a critical void exists in providing couples with robust tools to evaluate and nurture their compatibility *after* meeting and as their relationship evolves. LifeSync is a pioneering web (and future mobile) platform designed to bridge this gap. Moving beyond superficial metrics, LifeSync offers comprehensive, data-driven assessments that delve into tangible and often sensitive aspects crucial for long-term partnership, such as finances (including cultural considerations like family support and lobola in the South African context), lifestyle habits, core values, past relationships, future aspirations, hobbies, career, and education.
+
+LifeSync empowers individuals and couples by providing structured evaluations, user-generated content, and actionable insights, all governed by a granular, user-centric consent model for information sharing. This enables informed discussions and confident decisions at every stage – from early dating through cohabitation, marriage, and family planning. A core element is a free, accessible guest assessment providing instant, cumulative feedback and a temporary report, demonstrating value and incentivizing full registration for ongoing tracking, deeper insights, secure couple syncing, and participation in a trusted community. While initially pitched as "the app after the dating app," LifeSync is architected for future expansion into a comprehensive relationship service, including consent-based dating features.
+
+**1. The Problem**
+* **Dating apps stop too early:** Current platforms facilitate initial connections but offer minimal support for evaluating practical, long-term compatibility.
+* **Informal and incomplete evaluation:** Couples often navigate crucial compatibility discussions informally, leading to avoided topics and future conflicts.
+* **Cultural sensitivities around crucial topics:** Discussions about finances, debt, past relationships, family obligations (like supporting extended family), and cultural practices (such as lobola) are often difficult to approach without a neutral framework, especially in contexts like South Africa.
+* **Lack of relationship evolution tracking:** Couples lack tools to establish a baseline understanding or track compatibility shifts over time.
+* **Decisions based on emotion, not information:** Major relationship milestones are often decided without a clear, data-informed understanding of practical compatibility.
+* **Need for deeper profile information:** Users desire profiles that are as comprehensive as, if not more than, popular dating sites, covering hobbies, career, education, work, etc., from the outset.
+* **Generic questioning:** Existing platforms may not cater to all individual nuances, creating a need for users to define what's uniquely important to them.
+* **Lack of trust and safety:** Concerns about fake profiles and misrepresentation hinder genuine connection.
+
+**2. The Solution: LifeSync**
+LifeSync is a secure, stages-based platform offering individuals and couples tools to build comprehensive profiles, evaluate compatibility across a wide spectrum of tangible and culturally relevant aspects, and connect with others based on mutual consent.
+
+Our solution includes:
+* **Accessible Entry Point with Instant Value:** A prominent guest assessment (temporary profile) provides immediate value with cumulative compatibility feedback and a detailed report accessible for a limited time (e.g., 90 days), incentivizing registration.
+* **Comprehensive Profile Building:** Users (registered and temporary) can create detailed profiles covering hobbies, career, education, work, and other standard dating profile information, in addition to deeper assessment areas.
+* **In-depth, Culturally Aware Assessments:** Structured questionnaires (targeting 150+ initial questions) covering finances, lifestyle, values, future goals, personal history, and more. Modules address relevant cultural contexts.
+* **User-Generated Questions:** Registered users can create and answer their own unique questions, adding unparalleled personalization to their profiles. A verification system will aim to prevent duplication of existing app questions.
+* **Granular Consent-Based Syncing:**
+    * Connection initiated via username search, requiring mutual acceptance.
+    * Users choose which categories of their profile/assessment data they are willing to share with a synced partner.
+    * Partners see *which categories* the other is willing to share, but not the actual data, until both mutually agree to share a specific category.
+    * This consent-driven model is paramount, ensuring no information is shared without explicit, reciprocal agreement for each piece/category of information.
+* **Relationship Stage Alignment:** Assessments and profile sections are suggested by relationship stage, but users have flexibility.
+* **Objective Insight Generation & Compatibility Tracking:** The platform analyzes responses to highlight alignment and divergence, fostering communication. Registered users can track their compatibility evolution.
+* **Future Dating Functionality & Public Profiles:**
+    * Registered users can opt-in to make parts of their profile public, indicating what they are looking for.
+    * Non-registered users will see brief, non-identifying summaries of these public profiles, with featured profiles rotated randomly to create an engaging experience without revealing user counts. Default sharing for public view is "none".
+* **Safety & Feedback System:** A mutual, Airbnb-style feedback system allows users who have synced to rate and review each other. Feedback is visible only after both parties submit. Cumulative scores contribute to user trustworthiness.
+* **Secure & Private Environment:** Robust data protection (AES-256 encryption for sensitive data), adherence to POPIA and GDPR.
+
+**3. Key Features (Expanded)**
+* **Guest Assessment & Temporary Profiles:** Easy access, cumulative feedback, temporary report (e.g., 90 days), risk of data deletion if not registered.
+* **Secure Individual Profiles:** Private profiles with comprehensive sections (basic info, hobbies, career, education, work, values, etc.) and assessment answers.
+* **User-Generated Questions & Answers:** Users can add custom questions to their profiles.
+* **Secure Couple Syncing:** Verified, consent-based linking.
+* **Dynamic & Comprehensive Questionnaires:** (Targeting 150+ questions) Organized by category, relationship stage, cultural relevance.
+* **Granular Sharing Controls & Consent Dashboard:** Detailed UI for managing what is shared with whom.
+* **Compatibility Insights Dashboard:** Visualization of alignment and differences.
+* **Relationship Progress Tracker & Historical Data:** For registered users.
+* **Public Profile Options (Opt-in):** For users interested in discoverability.
+* **Featured Profile Display (Non-Registered Users):** Random, anonymous summaries.
+* **Mutual Feedback & Reputation System:** Post-sync reviews.
+* **Resource Library (Future Phase):** Curated content.
+* **Data Import Integration (Future Phase):** Consent-driven from external platforms.
+
+**4. Relationship Stages & Assessment Depth**
+(Content largely as per, but emphasizing the expanded set of initial profile-building questions before or alongside Stage 1 assessments, covering hobbies, career, education, work, etc.)
+* **Initial Profile Setup (Upon Registration/Temp Profile Creation):** Comprehensive sections for basic demographics, photos, hobbies, interests, education, career, lifestyle preferences (similar to Hinge, OkCupid).
+* **Guest Assessment:** A selection of questions from various categories.
+* **Stage 1-5 Assessments:** As previously outlined, but with increased depth and breadth.
+* **User-Generated Questions:** Integrated into the profile for others to see (if user shares) and potentially answer for comparison if they have the same custom question.
+
+**5. Technical Overview**
+* **Frontend:** HTML, CSS (Tailwind), JavaScript (using Firebase SDK directly for this phase). Current UI is well-liked and will be maintained.
+* **Backend:** Firebase (Authentication, Firestore Database, Cloud Functions if needed for complex backend logic like verification of user-generated questions or complex matching).
+* **Database (Firestore):** NoSQL. Collections for `users`, `tempProfiles`, `assessmentsBank` (for the 150+ questions), `userAnswers`, `userGeneratedQuestions`, `coupleSyncs`, `feedback`, `publicProfilesConfig`.
+* **Compatibility Logic:** Client-side and/or Cloud Functions for comparing responses.
+* **Security:** Firebase security rules, HTTPS. Encryption for sensitive data where applicable.
+* **Key Design Principles:** Consent-driven architecture, data privacy, scalability.
+
+**6. Development Plan (Phased)**
+* **Phase 1 (Current Focus - Enhance Core Functionality):**
+    * Fix Resources page display.
+    * Fix Assessment functionality (make existing buttons work, load questions).
+    * **Expand Assessment Content:** Populate Firestore with 150+ questions across diverse categories (including comprehensive profile builders: hobbies, work, education, etc.).
+    * Implement comprehensive profile creation for registered and temporary users.
+    * Basic User-Generated Question input and storage.
+* **Phase 2: Implement Advanced Sync, Consent & Initial Public View:**
+    * Detailed sync mechanism with granular consent as described by user.
+    * Basic public profile display (opt-in) and featured profile for non-registered users.
+    * Initial version of the mutual feedback system.
+* **Phase 3: Advanced Features & Mobile App:**
+    * Refine user-generated question system (e.g., verification against existing questions).
+    * Data Import, Resource Library.
+    * Native mobile applications (Android first, then iOS).
+
+**7. Market Opportunity**
+(As per, with added emphasis on the highly personalized profiles through user-generated questions and the trust built by the robust consent model and feedback system).
+
+**8. Monetization Strategy**
+(As per, guest access and basic profiles are free. Subscriptions for advanced assessment comparisons, unlimited user-generated questions, detailed sync insights, and premium visibility in the dating phase).
+
+**9. Team (Placeholder)**
+
+**10. Financial Projections (Placeholder)**
+
+**11. Legal and Ethical Considerations**
+(As per, with even stronger emphasis on the granular consent model for *all* data sharing, including user-generated content and feedback). Transparency about data deletion for temporary profiles is key.
+
+**Conclusion**
+(As per, highlighting the path from a compatibility tool to a more comprehensive, consent-driven relationship platform, potentially including dating). LifeSync's commitment to user control, comprehensive profiling, and culturally relevant insights will make it an indispensable tool.
+
+**LifeSync Scoring, Typology, and Reputation Framework (Revised May 2025)**
