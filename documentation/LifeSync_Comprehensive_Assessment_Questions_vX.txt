@@ -1,0 +1,129 @@
+**LifeSync Comprehensive Profile & Assessment Questions Proposal (Revised May 2025)**
+
+This document outlines the expanded structure for user profiles and the initial set of questions for the LifeSync platform, aiming for a minimum of 150 questions integrated into a comprehensive profile-building and assessment experience. It emphasizes structured input, cultural relevance, and the ability for users (including temporary/guest users) to build a detailed initial profile.
+
+**I. Core Profile Information (User Onboarding / Initial Setup)**
+This section is completed upon registration or when creating a temporary profile. It forms the baseline public-facing information (if user opts to share) and basic matching parameters.
+* **Identity & Appearance:**
+    * First Name / Username (Username is key for connection)
+    * Age / Date of Birth
+    * Gender (User-defined input or extensive options)
+    * Sexual Orientation (User-defined input or extensive options)
+    * Location (City/Region - general, not specific address)
+    * Photos (Profile picture, additional photos)
+    * Physical Description (Height, Body Type - optional, user-defined or broad categories)
+* **About Me / Bio:**
+    * Short Bio / Tagline
+    * Longer "About Me" section (Text input)
+* **Education & Career:**
+    * Highest Education Level Attained (Dropdown)
+    * Field(s) of Study (Text input/Tags)
+    * Institution(s) Attended (Optional, Text input)
+    * Current Occupation / Job Title (Text input)
+    * Industry (Dropdown/Tags)
+    * Work Habits & Style (e.g., "My work schedule is...", "I prefer to keep work and personal life...")
+    * Career Aspirations (Short text) [cite: 213]
+* **Lifestyle:**
+    * Smoking Habits (Yes/No/Socially/Trying to quit) [cite: 199]
+    * Drinking Habits (Yes/No/Socially/Regularly) [cite: 198]
+    * Dietary Preferences (e.g., Vegetarian, Vegan, Omnivore, Allergies - Multiple choice, text input)
+    * Exercise Habits (e.g., Daily, Few times a week, Rarely, Type of exercise)
+    * Pets (Own pets? Like pets? Type of pets - Multiple choice)
+    * Living Situation (e.g., Live alone, With roommates, With family - Multiple choice)
+* **Hobbies & Interests:**
+    * Select from a predefined list of hobbies/interests (e.g., Reading, Hiking, Cooking, Gaming, Art, Music, Travel, Sports, Volunteering).
+    * Ability to add custom hobbies/interests.
+    * How do you prefer to spend your weekends? (Multiple Choice/Text)
+    * What are your favorite ways to relax? (Text Input) [cite: 149]
+* **Looking For:**
+    * What kind of connection are you seeking on LifeSync? (e.g., Deepen current relationship, Evaluate new relationship, Friendship, Long-term partnership, Marriage, Open to options – Multiple Choice)
+    * (If applicable for future dating phase) What are you looking for in a partner? (Short text)
+
+**II. Structured Assessment Categories & Questions (Targeting 150+ Total)**
+These are deeper dives, building upon the core profile. Questions are designed for structured input (scales, multiple-choice, rank) where possible[cite: 89].
+
+**(Existing categories from will be expanded with more questions to reach the target count. New sub-sections are added below.)**
+
+**A. Lifestyle Alignment (Expanded)**
+* **Assessment: Daily Habits & Preferences** (as per, add more on sleep patterns, morning/night person, daily screen time habits)
+* **Assessment: Hobbies & Leisure** (as per, add more on types of media consumed, preferred social activities)
+* **Assessment: Travel & Exploration** (as per, add more on dream destinations, importance of cultural immersion vs. relaxation during travel)
+* **Assessment: Home Life & Living Environment**
+    * What does your ideal home environment feel like? (Text input, or choose keywords like: Cozy, Minimalist, Vibrant, Organized, Quiet, Social Hub)
+    * How do you feel about hosting guests (friends, family)? (Scale: Love it to Prefer not to)
+    * Importance of cleanliness and tidiness in shared spaces (Scale) [cite: 147]
+
+**B. Values & Beliefs (Expanded)**
+* **Assessment: Core Personal Values** (as per, expand list of values to rank, add situational questions to reveal values in action)
+* **Assessment: Religious & Spiritual Views** (as per, add questions about tolerance/acceptance of different beliefs in a partner, role of faith community)
+* **Assessment: Political & Social Views** (as per, add questions on community involvement, activism, importance of discussing current events)
+* **Assessment: Ethical Considerations**
+    * How important is environmental consciousness to you in daily life? (Scale)
+    * What are your views on animal welfare? (Multiple choice/Scale)
+
+**C. Finances & Future Security (Expanded)**
+* **Assessment: Financial Habits & Attitudes** (as per, add questions on impulse buying, attitude towards debt, importance of saving for specific goals like a down payment or retirement)
+* **Assessment: Financial Planning & Security** (as per, add questions on risk tolerance in investments, definition of financial security, planning for emergencies)
+* **Assessment: Family Financial Support (Culturally Nuanced)** (as per, ensure questions are sensitive and cover expectations from *both* sides of a partnership)
+* **Assessment: Work & Financial Ambition**
+    * How important is career advancement to you? (Scale)
+    * What are your income expectations for yourself in 5 years? 10 years? (Ranges, or "Prefer not to say")
+    * How do you view the role of money in happiness? (Scale/Text)
+
+**D. Relationships & Family (Expanded)**
+* **Assessment: Past Relationship Impact** (as per, add questions about lessons learned regarding communication, trust, and boundaries)
+* **Assessment: Family Dynamics & Expectations** (as per, add questions on frequency of contact with family, holiday traditions, expectations for partner's involvement with your family and vice-versa)
+* **Assessment: Views on Children & Parenting** (as per, add more on parenting styles, discipline, education, co-parenting with an ex-partner if applicable, role of extended family in child-rearing)
+* **Assessment: Friendships & Social Circles**
+    * How important are close friendships to you? (Scale)
+    * How do you prefer your partner to interact with your friends? (Multiple Choice)
+    * How much time do you typically dedicate to friends? (Scale)
+
+**E. Communication & Conflict Resolution (New Dedicated Category)**
+* **Assessment: Communication Styles**
+    * How do you typically express affection or appreciation? (Multiple Choice: Verbal, Physical, Acts of Service, Gifts, Quality Time)
+    * How do you prefer to receive affection or appreciation? (Multiple Choice)
+    * How direct are you in your communication? (Scale: Very Indirect to Very Direct)
+    * How comfortable are you expressing difficult emotions? (Scale)
+* **Assessment: Conflict Resolution**
+    * When a disagreement arises, what is your typical first reaction? (Multiple Choice: Address it immediately, Need space to think, Avoid it, Seek outside opinion)
+    * How important is "winning" an argument to you? (Scale: Not important to Very important)
+    * What does a healthy apology look like to you? (Text input)
+    * How do you typically feel after a conflict is resolved? (Multiple Choice)
+
+**F. Health & Well-being (Expanded)**
+* **Assessment: Physical Health & Habits** (incorporates, add questions on attitudes towards alternative medicine, importance of partner's physical fitness)
+* **Assessment: Mental & Emotional Well-being**
+    * How do you typically manage stress? (Multiple Choice/Text input)
+    * How important is discussing mental health openly in a relationship? (Scale)
+    * Have you ever sought therapy or counseling? (Yes/No/Prefer not to say)
+* **Assessment: Personal Habits & Addictions** (as per, ensure sensitivity and focus on current status and management if applicable)
+
+**G. Intimacy & Connection (Expanded, Handle with Sensitivity)**
+* **Assessment: Views on Intimacy** (as per, add questions about the importance of different types of intimacy: emotional, intellectual, physical, spiritual)
+* **Assessment: Intimacy Preferences & Boundaries** (questions on comfort levels, discussing desires, importance of consent in every interaction - multiple choice/scale, always with "Prefer not to answer")
+* **Assessment: Past Relationship History (Optional & Sensitive)** (as per, ensure this section is clearly optional and users understand how this data might be used or perceived. Focus on comfort with sharing).
+
+**H. Cultural Practices & Background (Expanded, South Africa Specific & General)**
+* **Assessment: Cultural Identity & Significance**
+    * How strongly do you identify with your cultural heritage? (Scale) [cite: 23]
+    * What specific cultural traditions or rituals are important to you and would you want to share/continue in a partnership? (Text input)
+    * How important is language (e.g., mother tongue) in your home and family life? (Scale)
+* **Assessment: Views on Inter-cultural Relationships** (if applicable)
+    * What do you see as the joys and challenges of an inter-cultural relationship? (Text input)
+    * How would you approach navigating differing cultural expectations from extended family? (Text input)
+* **Assessment: Traditional Roles & Modern Interpretations**
+    * What are your views on traditional gender roles within a relationship and family? (Scale: Very Traditional to Very Egalitarian, with text explanation)
+    * How do you envision the division of household labor and financial responsibilities in a long-term partnership? (Text/Multiple Choice)
+* **Assessment: Specific Cultural Practices (e.g., Lobola for SA Context)** (as per[cite: 179], handled with sensitivity, focusing on understanding individual perspectives, expectations, and perceived impact on the couple)
+
+**III. User-Generated Questions (UGQs)**
+* **Functionality:** Users can create their own questions and provide their own answers.
+* **Purpose:** To cover nuances not addressed in the standard assessments.
+* **Sharing:** Users control which of their UGQs are visible to a synced partner. A partner can then choose to answer the same question if they see it.
+* **Verification (Light):** The system might offer a suggestion if a user's UGQ is very similar to an existing platform question, to encourage using standard questions for broader compatibility insights, but ultimately allow the user to proceed.
+
+**IV. Scoring & Feedback Integration**
+* **Cumulative Feedback:** For guest/temporary users and registered users, feedback (e.g., "Initial alignment on X: Moderate") can be provided as they fill out their core profile and initial assessments[cite: 142].
+* **Sectional & Global Scores:** Calculated based on responses to structured questions in the detailed assessments for registered users[cite: 141].
+* **Profile data:** While not directly "scored" in the same way as assessments, comprehensive profile data (hobbies, work, etc.) will be crucial for users to review side-by-side with a synced partner for perceived compatibility and conversation starters. The system can highlight shared interests or stark differences from this profile data.
