@@ -1,0 +1,286 @@
+**LifeSync - Detailed Technical Specification Document (May 2025)**
+
+**1. Introduction & Goals**
+This document outlines the technical specifications for the LifeSync web application. LifeSync aims to be a platform for individuals and couples to evaluate and understand their compatibility through comprehensive profiles, structured assessments, user-generated questions, and a robust, consent-based data-sharing model.
+Initial platform: Web application (`index.html` SPA). Future: Android, iOS apps.
+Core Principles: User Consent, Data Privacy, In-Depth Insights, Phased Development.
+
+**2. System Architecture**
+* **Frontend:** Single Page Application (SPA)
+    * **Technology:** HTML5, CSS3 (Tailwind CSS), JavaScript (ES6+).
+    * **Framework/Libraries:** No specific JS framework like React is mandated for the initial pure JS build in `index.html`. Direct DOM manipulation and Firebase SDK usage. i18next for internationalization. Chart.js for visualizations.
+    * **Responsibilities:** UI rendering, user input handling, state management (client-side), interaction with Firebase services, displaying assessments and compatibility insights.
+* **Backend:** Firebase (Backend-as-a-Service - BaaS)
+    * **Firebase Authentication:** Handles user registration (Email/Password, Google Sign-In), login, session management.
+    * **Firebase Firestore:** NoSQL cloud database for storing all application data (user profiles, assessment questions, answers, sync statuses, feedback, etc.).
+    * **Firebase Cloud Functions (Future Consideration):** For server-side logic that cannot or should not be done client-side (e.g., complex matching algorithms, UGQ verification workflows, sending notifications, cron jobs for data cleanup like expired temp profiles).
+    * **Firebase Hosting:** To host the static `index.html` file and assets (though Namecheap is used for the primary domain and initial file serving for `index.html`). Firebase Hosting could be used for quicker deployments or specific needs.
+* **Hosting (Frontend Files):** Namecheap Stellar Plus (serving `index.html` and static assets).
+
+**3. Data Models (Firestore Collections)**
+
+* **`users` Collection:**
+    * Document ID: `firebaseAuthUID`
+    * Fields:
+        * `name` (String)
+        * `email` (String, indexed for lookup)
+        * `username` (String, unique, indexed for lookup and connection requests)
+        * `createdAt` (Timestamp)
+        * `updatedAt` (Timestamp)
+        * `profileImageURL` (String, optional)
+        * `coreProfile` (Map): Contains comprehensive profile fields like:
+            * `dob` (Timestamp or String YYYY-MM-DD)
+            * `gender` (String)
+            * `orientation` (String)
+            * `locationCity` (String)
+            * `locationCountry` (String)
+            * `bioShort` (String)
+            * `bioLong` (String)
+            * `educationLevel` (String)
+            * `educationField` (String)
+            * `occupation` (String)
+            * `industry` (String)
+            * `workStyle` (String) // e.g., remote, office, flexible
+            * `smoking` (String) // e.g., yes, no, socially
+            * `drinking` (String)
+            * `diet` (String)
+            * `exercise` (String)
+            * `pets` (String)
+            * `livingSituation` (String)
+            * `lookingFor` (String) // type of connection
+            * `hobbies` (Array of Strings/Maps)
+        * `publicProfileConfig` (Map, optional): Defines what parts of `coreProfile` and assessment summaries are public if user opts-in.
+            * `isPublic` (Boolean, default: `false`)
+            * `visibleSections` (Array of Strings, e.g., ["hobbies", "bioShort", "lookingFor"])
+        * `privacySettings` (Map): User-defined global privacy settings.
+            * `allowUsernameSearch` (Boolean, default: `true`)
+            * `defaultSharingLevel` (String, e.g., "none", "categories_only")
+        * `reputationScore` (Number, cumulative, optional)
+        * `lastLogin` (Timestamp)
+
+* **`tempProfiles` Collection:**
+    * Document ID: Auto-generated Firestore ID
+    * Fields:
+        * `username` (String, unique within temp profiles during their active period)
+        * `code` (String, for login)
+        * `createdAt` (Timestamp)
+        * `expiresAt` (Timestamp, e.g., 90 days from creation)
+        * `coreProfile` (Map, same structure as `users.coreProfile`)
+        * `lastAccessed` (Timestamp)
+    * *Note:* Firestore Rules will enforce expiry. A Cloud Function could periodically clean up expired profiles.
+
+* **`assessmentBank` Collection:** (Stores the master questions)
+    * Document ID: Auto-generated or meaningful ID (e.g., `lifestyle_daily_habits_01`)
+    * Fields:
+        * `category` (String, e.g., "Lifestyle", "Values", "Finance")
+        * `subCategory` / `assessmentName` (String, e.g., "Daily Habits", "Core Personal Values")
+        * `questionText` (String, the actual question)
+        * `questionKey` (String, i18n key for the question)
+        * `answerType` (String, e.g., "scale_1_5", "multiple_choice_single", "multiple_choice_multiple", "text_short", "ranking", "yes_no")
+        * `answerOptions` (Array of Maps, if multiple choice/scale, e.g., `[{value: 1, textKey: "option_not_important"}, ...]`)
+        * `order` (Number, for display sequence within an assessment)
+        * `stageSuggestion` (Array of Numbers, e.g., [1, 2] for relevance to Stage 1 & 2)
+        * `culturalTags` (Array of Strings, e.g., ["SA_General", "Lobola_Specific"])
+        * `importanceDefault` (Number, e.g., 3 on a 1-5 scale)
+        * `isActive` (Boolean, default: `true`)
+
+* **`userAnswers` Collection:**
+    * Document ID: `firebaseAuthUID` (for registered) OR `tempProfileID` (for temporary)
+    * Subcollection: `answers`
+        * Document ID: `questionBankID` (links to `assessmentBank`)
+        * Fields:
+            * `answerValue` (Any - depends on `answerType`. Could be number, string, array of strings)
+            * `answeredAt` (Timestamp)
+            * `userImportance` (Number, optional, user-set importance for this question)
+            * `notes` (String, optional, user's private notes on this answer)
+
+* **`userGeneratedQuestions` Collection:**
+    * Document ID: Auto-generated Firestore ID
+    * Fields:
+        * `creatorUID` (String, `firebaseAuthUID`)
+        * `questionText` (String)
+        * `answerText` (String, the creator's answer to their own question)
+        * `category` (String, user-defined or "User Custom")
+        * `createdAt` (Timestamp)
+        * `isPrivate` (Boolean, default: `true`) // controls if it can be seen by anyone other than creator
+
+* **`coupleSyncs` Collection:**
+    * Document ID: Auto-generated or a composite ID (e.g., `uid1_uid2` sorted alphabetically)
+    * Fields:
+        * `user1_UID` (String)
+        * `user2_UID` (String)
+        * `status` (String, e.g., "pending_user2_approval", "active", "declined", "unlinked")
+        * `requestedAt` (Timestamp)
+        * `activatedAt` (Timestamp, optional)
+        * `unlinkedAt` (Timestamp, optional)
+        * `user1_sharedCategories` (Map): Keys are category names (e.g., "hobbies", "financeAssessment"), values are booleans (`true` if user1 consents to share this category's summary/questions with user2).
+            * Example: `{"hobbies": true, "financeAssessment_summary": true, "ugq_[UGQ_ID]": true}`
+        * `user2_sharedCategories` (Map): Same structure for user2.
+        * `mutuallyAgreedCategories` (Map): Keys are category names, values are booleans (`true` if both users have agreed to see each other's details for this specific category). This is where actual data becomes viewable.
+            * Example: `{"hobbies": true}` (meaning both can see each other's hobbies)
+
+* **`feedback` Collection:**
+    * Document ID: Auto-generated Firestore ID
+    * Fields:
+        * `syncID` (String, links to `coupleSyncs` document ID)
+        * `reviewerUID` (String)
+        * `revieweeUID` (String)
+        * `ratingProfileAccuracy` (Number, 1-5)
+        * `ratingAuthenticity` (Number, 1-5)
+        * `comment` (String, optional)
+        * `createdAt` (Timestamp)
+        * `isReviewerFeedbackSubmitted` (Boolean) // For the mutual reveal logic
+        * `isRevieweeFeedbackSubmitted` (Boolean)
+
+**4. Core Functionalities**
+
+* **4.1. User Authentication (Firebase Auth & Frontend JS)**
+    * Email/Password Registration & Login.
+    * Google Sign-In & Registration.
+    * Password Reset.
+    * Session Management (handled by Firebase SDK).
+    * Temporary Profile Creation (username/code, stored in `tempProfiles`, local storage for session).
+    * Temporary Profile Login.
+
+* **4.2. Profile Management (Frontend JS & Firestore)**
+    * Create/Edit Comprehensive `coreProfile` (for registered and temp users).
+    * Upload/Manage Photos (Requires Firebase Storage if storing files, or use URLs).
+    * Manage `publicProfileConfig` (opt-in, select visible sections).
+    * Manage `privacySettings`.
+    * View own UGQs.
+    * Create new UGQs (stored in `userGeneratedQuestions`, linked to `creatorUID`).
+    * View own reputation/feedback received (after mutual submission).
+
+* **4.3. Assessments (Frontend JS & Firestore)**
+    * Fetch questions from `assessmentBank` based on category, stage, etc.
+    * Display questions with appropriate input types.
+    * Save answers to `userAnswers` (linked to user and question).
+    * Real-time (or near real-time) feedback for guest assessments (basic insights).
+    * Detailed results/insights for registered users (individual reports).
+
+* **4.4. Couple Syncing & Consent Management (Frontend JS & Firestore)**
+    * Search users by `username`.
+    * Send/Receive/Accept/Decline sync requests (managed in `coupleSyncs`).
+    * **Granular Sharing UI:** For each active sync, users can:
+        * See a list of their profile sections, assessment categories, and their own UGQs.
+        * Toggle what they are willing to "offer" to share with their partner for each item/category (updates `userX_sharedCategories` in `coupleSyncs`).
+    * **Mutual Sharing View:** For each active sync, users can:
+        * See the list of categories/items their partner has "offered" to share.
+        * For each item offered by the partner, if the current user has also "offered" a corresponding item/category, they can "Accept" to view that specific shared information. This updates `mutuallyAgreedCategories`.
+    * Display mutually agreed shared information from partner's profile/assessments/UGQs.
+
+* **4.5. Public Profile Display (Frontend JS & Firestore)**
+    * If `publicProfileConfig.isPublic` is true for a user, parts of their `coreProfile` (as defined in `visibleSections`) are displayed.
+    * Non-registered users see a limited number of randomly selected, anonymized featured public profiles. No direct Browse of all public profiles for non-registered users.
+    * Registered users might have more advanced search/browse for public profiles (future phase).
+
+* **4.6. Feedback System (Frontend JS & Firestore)**
+    * After a sync is active for some time or after unlinking, prompt users to leave feedback.
+    * Store feedback in `feedback` collection.
+    * Reveal feedback to both parties only when both have submitted or a time window closes.
+    * Display received feedback and cumulative reputation score on user's private profile view.
+
+* **4.7. Resources Page (Frontend JS)**
+    * Display categories and items from the `resourcesData` object (currently embedded in JS, future: separate JSON/JS file).
+
+**5. Key UI Components & Flows**
+* Onboarding (Comprehensive Profile + Initial Assessment Questions).
+* Assessment Taking Interface.
+* User Dashboard (Profile summary, ongoing assessments, sync requests, access to settings).
+* Couple Sync Dashboard (Manage sharing preferences, view shared info, initiate feedback).
+* Public Profile View (for others).
+* Resources Section.
+
+**6. Security Considerations**
+* **Firestore Security Rules:** Critically important.
+    * Users can only read/write their own `users/[UID]`, `userAnswers/[UID]`, `userGeneratedQuestions` (where `creatorUID` matches).
+    * Temp profiles can only be written initially and read by the session that created them (more complex rule, may involve a short-lived token or rely on client-side holding the temp ID). Or, Cloud Function for creation.
+    * `coupleSyncs`: Writable by involved users for their respective consent fields. Readable by involved users.
+    * `feedback`: Writable by involved users for their specific review. Readable by involved users only after conditions are met (both submitted).
+    * `assessmentBank`: Read-only for authenticated users.
+    * Public profiles: Readable if `publicProfileConfig.isPublic` is true (selected fields only).
+* **Input Validation:** Client-side and (if using Cloud Functions) server-side.
+* **HTTPS:** Enforced by Firebase Hosting / standard web hosting.
+* **Data Encryption:** Firestore encrypts data at rest and in transit. Sensitive UGQs/answers or notes, if deemed ultra-sensitive, could have additional client-side encryption before sending to Firestore, but this adds complexity.
+* **Rate Limiting (Cloud Functions):** If using functions for sensitive operations.
+* **Username Uniqueness:** Enforced via Firestore rules/Cloud Function during registration/temp profile creation.
+
+**7. Future Scalability & Maintenance**
+* Firestore scales automatically.
+* Frontend performance: Optimize JS, image sizes. Consider code splitting if `index.html` becomes too large.
+* Cloud Functions can handle more intensive tasks off the client.
+* Regular review of Firebase costs and usage.
+* Modular JavaScript for easier maintenance.
+
+**8. Deployment**
+* Frontend: Upload `index.html` and `assets` to Namecheap.
+* Firebase: Deploy Firestore rules, Storage rules (if used), Cloud Functions (if used) via Firebase CLI.
+
+**Prompt for AI: Recreate LifeSync Web Platform MVP & Phase 1 Core**
+
+**Objective:**
+Develop the core of the LifeSync web platform, a single-page application (`index.html`) using HTML, CSS (Tailwind), and vanilla JavaScript with the Firebase SDK. The platform helps individuals and couples evaluate compatibility.
+
+**Core Requirements:**
+
+1.  **Tech Stack:**
+    * **Frontend:** Vanilla JavaScript (ES6+), HTML5, Tailwind CSS. All within a single `index.html` initially.
+    * **Backend:** Firebase (Authentication for Email/Password & Google, Firestore for database).
+    * **UI:** Maintain the existing aesthetic and layout elements as previously developed (dark theme, specific fonts, section-based navigation).
+
+2.  **User Authentication (Firebase Auth):**
+    * Email/Password Registration (Name, Email, Password).
+    * Email/Password Login.
+    * Google Sign-In/Registration.
+    * Logout functionality.
+    * Temporary Profile:
+        * Allow users to create a temporary profile with a username.
+        * Generate a unique access code.
+        * Store temp profile (username, code, expiry - e.g., 90 days) in Firestore (`tempProfiles` collection).
+        * Allow login with username and code.
+        * Data associated with temp profiles (core profile, assessment answers) should also be stored.
+
+3.  **Firestore Data Structure Design:**
+    * **`users` collection:** (Doc ID: `UID`) `name`, `email`, `username`, `createdAt`, `coreProfile` (map for hobbies, work, education, etc.), `publicProfileConfig` (map), `privacySettings` (map).
+    * **`tempProfiles` collection:** (Doc ID: auto) `username`, `code`, `createdAt`, `expiresAt`, `coreProfile` (map).
+    * **`assessmentBank` collection:** (Doc ID: auto) `category`, `subCategory`, `questionText`, `questionKey` (for i18n), `answerType` (`scale_1_5`, `multiple_choice_single`, `text_short`, etc.), `answerOptions` (array), `order`, `culturalTags` (array).
+    * **`userAnswers` collection:** (Doc ID: `UID` or `tempProfileID`) with a subcollection `answers` (Doc ID: `questionBankID`) storing `answerValue`, `answeredAt`.
+    * **`userGeneratedQuestions` collection:** (Doc ID: auto) `creatorUID`, `questionText`, `answerText`, `createdAt`.
+
+4.  **Comprehensive Profile Building (For Registered & Temp Users):**
+    * Upon signup/temp profile creation, guide users to fill a `coreProfile` section.
+    * Fields: Hobbies (multi-select/custom), Career (text), Education (text/dropdown), Work (text), Lifestyle (smoking, drinking, diet, exercise - choices), About Me (text), Photos (URL input for now).
+    * This data should be saved to the respective Firestore document (`users` or `tempProfiles`).
+
+5.  **Assessment Functionality (Target 150+ Questions from `assessmentBank`):**
+    * Create a section in `index.html` to display assessment categories.
+    * When a category/assessment is selected:
+        * Fetch relevant questions from `assessmentBank` in Firestore.
+        * Dynamically render questions and input fields based on `answerType` and `answerOptions`.
+        * Allow users to answer questions.
+        * Save answers to the `userAnswers` collection in Firestore, linked to the user (or temp profile) and the question.
+        * Implement UI for Quick Compatibility (Basic, Intermediate, Advanced levels) and a more detailed "My Relationship Profile Builder" (which covers the 150+ questions).
+        * Assessment buttons/links in the "Assessments" section must be functional.
+
+6.  **User-Generated Questions (Basic Implementation):**
+    * Allow registered users to go to their profile page and add custom questions with their own answers.
+    * Store these in the `userGeneratedQuestions` collection.
+    * Display these questions and answers on their own profile view.
+
+7.  **Resources Page:**
+    * Create a `resourcesData` JavaScript object (as previously defined with multiple categories and items including name, link, descriptionKey).
+    * Implement `displayResourceCategories()` and `displayResourceItems()` functions in JavaScript to populate the "Resources" section of the `index.html` dynamically from this object. This section must be functional and display the content.
+
+8.  **UI & Navigation:**
+    * Single-page application feel with sections (`about`, `assessments`, `tools`, `resources`, `profile`).
+    * Use existing navigation logic to switch between sections.
+    * Modals for Login, Register, Temp Profile creation/login.
+    * i18next for internationalization (provide basic English translations for new elements).
+    * Responsive design using Tailwind CSS.
+
+9.  **Key Principles to Embed:**
+    * **Consent (for future sync feature):** While full sync isn't in MVP, structure data with future consent needs in mind (e.g., clear separation of user data).
+    * **Data Privacy:** No sensitive data exposed unnecessarily. Secure Firestore rules.
+
+**Output:**
+Provide the complete `index.html` file containing all HTML structure, Tailwind CSS (either via CDN or inline `<style>` for necessary custom classes), and all JavaScript logic, including Firebase initialization and interaction for the features described above. Ensure the assessment functionality and resources page are working.
