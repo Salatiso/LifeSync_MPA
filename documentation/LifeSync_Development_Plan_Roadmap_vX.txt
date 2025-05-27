@@ -1,0 +1,101 @@
+**LifeSync Development Plan & Project Roadmap (Revised May 2025)**
+
+**1. Project Goal**
+To develop and deploy a functional web application of the LifeSync compatibility evaluation platform, with a primary focus on robust assessment functionality, comprehensive profile building, and a user-centric consent model for data sharing. The application will be hosted on Namecheap Stellar Plus (serving static frontend files), with Firebase as the backend. Development is managed via GitHub.
+
+**2. Technology Stack**
+* **Frontend:** HTML, CSS (Tailwind CSS), JavaScript. (The existing UI structure of `index.html` will be maintained and enhanced functionally, not redesigned).
+* **Backend:** Firebase
+    * Firebase Authentication (Email/Password, Google Sign-In).
+    * Firebase Firestore (NoSQL Database for user data, assessments, questions, etc.).
+    * Firebase Cloud Functions (Potentially for future complex backend logic, e.g., UGQ verification, advanced matching).
+* **Version Control & Collaboration:** GitHub.
+
+**3. Development Environment**
+* **Code Repository:** GitHub.
+* **Collaboration:** GitHub issues, project boards, pull requests.
+* **Local Development:** Standard web development setup (browser, text editor). Testing will involve direct interaction with the Firebase project backend.
+
+**4. Hosting Environment: Namecheap Stellar Plus & Firebase**
+* **Namecheap Stellar Plus:**
+    * **Role:** Hosting the static frontend files (`index.html`, CSS, JS, assets).
+    * **Deployment:** Via FTP/SFTP or cPanel File Manager.
+* **Firebase:**
+    * **Role:** Provides backend services (Authentication, Database). This is a separate cloud service, not directly managed within Namecheap's shared hosting environment for Node.js/PostgreSQL (as a previous version of this doc suggested). This simplifies Namecheap's role significantly.
+    * **Scalability:** Firebase services are designed to scale.
+
+**5. Project Phases and Roadmap**
+
+**Phase 1: MVP - Core Functionality & Stability (Partially Complete, In Progress)**
+* **Goal:** Working website with core guest assessment, user authentication, basic profile structure, and functional display of resources and assessments.
+* **Status:** Basic UI structure in place. User Authentication (Email, Google) is **WORKING**.
+* **Immediate Next Steps within Phase 1 (Current Focus):**
+    * **M1.A: Fix Resources Page Display:** Ensure categories and items from `resourcesData` render correctly.
+    * **M1.B: Fix Core Assessment Functionality:**
+        * Ensure clicking assessment level buttons (Quick Compat) and starting the Profile Builder quiz correctly loads and displays questions.
+        * Ensure answers can be selected and submitted.
+        * Ensure basic results/completion messages are shown.
+        * Ensure assessment data (answers, completion status) is saved to Firestore for both temporary and registered users.
+    * **M1.C: Expand Assessment & Profile Content (Target 150+ Questions):**
+        * Define detailed Firestore data structure for a comprehensive question bank (categories, sub-categories/assessments, question text, answer types, options, cultural tags, importance flags).
+        * Populate Firestore with an initial set of 150+ questions covering comprehensive profile areas (hobbies, career, education, work, lifestyle, values, family, etc.) and deeper compatibility topics as outlined in "Initial Assessment Questions Proposal."
+        * Update frontend to dynamically load these questions into the "Assessments" section and relevant parts of the "Profile" section.
+        * Implement UI for users to fill out these comprehensive profile sections.
+    * **M1.D: Basic User-Generated Question (UGQ) Input:**
+        * Allow registered users to input custom questions and their answers into their profile.
+        * Store these UGQs in Firestore linked to the user's profile.
+        * Basic display of their own UGQs in their profile view.
+* **Original MVP Milestones (Reference, some are complete or adapted):**
+    * M1.1 - M1.2: GitHub, Basic Frontend Structure (Done)
+    * M1.7: Frontend Auth Components (Done, Auth is working)
+    * M1.12: Backend Auth (Done, via Firebase)
+    * M1.18: Deployment to Namecheap (Done for static files)
+
+**Phase 2: Advanced Sync, Consent, Public View & Feedback System**
+* **Goal:** Implement the detailed couple syncing mechanism with granular consent, initial public profile features, and the mutual feedback system.
+* **Key Milestones:**
+    * Design and implement Firestore data structures for `coupleSyncs` (tracking sync requests, status, shared categories) and `feedback`.
+    * Develop UI for username search and sending/receiving sync requests.
+    * Develop UI for managing consent: allowing users to select which profile sections, assessment categories, and UGQs they wish to make available for a *specific* synced partner.
+    * Implement logic for "previewing" what categories a partner is willing to share.
+    * Implement logic for revealing mutually shared information only after both parties consent to share a specific category/item.
+    * Develop UI for users to opt-in to a public profile, selecting which (non-identifying) information to share.
+    * Implement frontend display of brief, anonymous, featured public profiles for non-registered users.
+    * Develop the mutual feedback system (submit, reveal after both, display).
+    * Backend logic (Cloud Functions if necessary) for managing these complex interactions.
+
+**Phase 3: Polish, Mobile & Future Growth**
+* **Goal:** Refine existing features, develop mobile applications, and explore further enhancements.
+* **Key Milestones:**
+    * Refine UGQ system (e.g., suggesting if a UGQ is similar to an existing platform question).
+    * Develop Resource Library.
+    * Implement Monetization Strategy.
+    * **Begin native Android application development**, followed by iOS.
+    * Explore Data Import integrations (with rigorous privacy review).
+    * Develop Couple Typology feature if validated.
+
+**6. Team Structure (Current - Implied)**
+* **Lead Developer/Architect:** You (Salatiso Mdeni) with AI assistance.
+* **Consultants (As needed):** Relationship/Psychology expert for question refinement, typology.
+
+**7. Communication and Collaboration**
+* **GitHub:** For code and potentially issue tracking.
+* **Chat with AI (Gemini):** For development, documentation, and brainstorming.
+
+**8. Deployment Strategy**
+* **Frontend (`index.html` and assets):** Build/manage locally, then upload static files to Namecheap Stellar Plus via FTP/SFTP or cPanel.
+* **Backend & Database:** Managed by Firebase. Configuration via Firebase Console.
+
+**9. Risks and Mitigation**
+* **Complexity of Sync/Consent Logic:** This is a highly intricate feature.
+    * **Mitigation:** Detailed state diagrams, careful data modeling in Firestore, thorough testing of all consent edge cases. Start with core consent, iterate on granularity.
+* **Scalability of User-Generated Content:** Large numbers of UGQs could become hard to manage/compare.
+    * **Mitigation:** Initial focus on individual use and direct sharing. Future phases might explore tagging or categorization of UGQs.
+* **Data Privacy & Security (Ongoing):** Especially with UGQs, public profiles, and feedback.
+    * **Mitigation:** Adhere to Firebase security best practices, clear user T&Cs, robust security rules for Firestore. Anonymize data for public featured profiles strictly.
+* **User Adoption for Dating Features:** Transitioning perception from compatibility tool to a dating-capable platform.
+    * **Mitigation:** Opt-in only for public profiles. Clear communication. Maintain core compatibility tool value.
+
+**10. Conclusion**
+The immediate priority is to fix existing functionality (resources, basic assessments) and then rapidly expand the assessment content and profile-building capabilities. This will provide immediate value and form the foundation for the advanced sync, consent, and future dating features. The use of Firebase for the backend simplifies hosting complexities on Namecheap significantly.
+
