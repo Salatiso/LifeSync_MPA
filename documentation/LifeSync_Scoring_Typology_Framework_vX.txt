@@ -1,0 +1,64 @@
+**LifeSync Scoring, Typology, and Reputation Framework (Revised May 2025)**
+
+This document details LifeSync's approach to compatibility evaluation, including nuanced scoring, a potential couple typology, user reputation through a feedback system, and the handling of an expanded question base including user-generated questions.
+
+**1. Comprehensive Profile & Assessment Data**
+LifeSync moves beyond basic assessments by first enabling users (both registered and temporary) to build comprehensive profiles covering:
+* **Standard Profile Information:** Hobbies, interests, career, education, work details, lifestyle choices (e.g., diet, exercise), photos, and a personal bio. This information provides foundational context.
+* **Structured Assessments:** A bank of 150+ questions across categories like Finances, Values, Lifestyle, Communication, Family, Cultural Practices, Intimacy, Future Aspirations, etc.. These questions will use structured formats (scales, multiple-choice, rank-order) where possible to facilitate analysis.
+* **User-Generated Questions (UGQ):** Registered users can create their own questions and provide their answers, allowing for deep personalization. These UGQs can be shared with synced partners under the consent model.
+
+**2. Nuanced Compatibility Scoring & Insights**
+LifeSync's scoring aims to provide actionable insights rather than a simplistic "compatibility percentage".
+* **Sectional & Category Alignment Scores:** For each predefined assessment section and broader category, scores will indicate alignment or divergence between a user's self-assessment and their partner's (if synced and shared). These scores update cumulatively.
+* **User-Defined Importance Weighting:** Users can indicate the importance of different categories or even specific predefined questions to them, influencing how differences in those areas affect insight summaries.
+* **Handling User-Generated Questions in Scoring:**
+    * Direct scoring of UGQs is complex. Initially, UGQs will primarily serve as points for direct comparison and discussion if a partner has answered the *same self-created question* or if both partners choose to share their respective UGQs.
+    * The platform will highlight if both partners have created and answered identically phrased UGQs.
+* **Insight Highlights:** The platform will emphasize:
+    * Specific predefined questions with significant alignment or divergence.
+    * Shared UGQs and the respective answers.
+    * Patterns in profile information (e.g., shared hobbies, differing work-life balance preferences indicated in profiles).
+* **Algorithm Considerations:**
+    * **Scale/Range Questions:** Measure distance between responses.
+    * **Multiple Choice:** Identify matching, complementary, or conflicting choices.
+    * **Text Input (Predefined & UGQ Answers):** Primarily for direct user review and discussion. Advanced phases might explore thematic analysis for common UGQs.
+* **Focus on Mutual Understanding:** The system encourages users to see *why* their answers differ, not just *that* they differ.
+
+**3. Couple Typology (Conceptual - Future Phase)**
+(As per, this remains a future goal. The expanded profile information and UGQs could enrich the data points used for typology classification).
+* The typology would be based on patterns across both structured assessments and potentially themes emerging from shared comprehensive profile data and mutually answered UGQs.
+
+**4. User Reputation & Feedback System (New Feature)**
+To foster trust and safety, and address concerns about misrepresentation:
+* **Mutual Feedback Post-Sync:** After two users have been synced for a period or have engaged in significant mutual sharing, they can provide feedback on each other.
+* **Blind Until Both Submit:** Similar to Airbnb, feedback and ratings are only revealed to both parties once both have submitted their review, or after a set window closes.
+* **Feedback Components:**
+    * Overall rating (e.g., on a 1-5 star scale for "Profile Accuracy" or "Authenticity").
+    * Specific comments on aspects like communication, profile representation vs. interaction.
+* **Cumulative Reputation Score:** A user's overall reputation score will be an aggregation of feedback received from various synced partners over time. This score can be a factor in future discoverability or trust indicators (with user consent on how it's displayed).
+* **Dispute Resolution (Basic):** A mechanism for users to report overtly unfair or abusive feedback would be necessary.
+
+**5. Consent Model for All Data (Reiteration for Emphasis)**
+* **Comprehensive Profile Data:** Users control the visibility of each section of their comprehensive profile (hobbies, work, etc.) when syncing with a partner, similar to assessment categories.
+* **User-Generated Questions:** A UGQ and its answer are private by default. A user can choose to make specific UGQs available for a synced partner to see (the question itself). The partner can then choose to answer that same question or share their own UGQs. Only when both explicitly agree to share answers to a *particular common or mutually shared UGQ* would the answers be visible.
+* **Feedback & Reputation:** Users would consent to participating in the feedback system. Their cumulative reputation score might be visible to new potential syncs (again, with user controls on this visibility).
+
+**6. Refining Assessment Questions & Adding Profile Sections**
+* **Initial Profile Builder:** Upon registration or temp profile creation, users will be guided through creating a rich initial profile including sections for:
+    * Basic Info (Age, Location - general area, Gender, Orientation - user-defined input)
+    * Photos
+    * About Me/Bio (Text)
+    * Hobbies & Interests (Select from list, add custom)
+    * Education Level & Field
+    * Profession & Industry
+    * Work Habits (e.g., typical hours, travel)
+    * Lifestyle (e.g., smoking, drinking, diet, exercise)
+    * Looking For (e.g., relationship type, connection goals)
+* **Structured Assessments (150+ Questions):** The existing categories will be expanded. For example:
+    * **Lifestyle:** More granular questions on social life, home life, pets, travel depth.
+    * **Career & Ambition:** Detailed questions on career importance, work-life balance, entrepreneurial spirit, financial ambition.
+    * **Communication Styles:** Deeper dive into conflict resolution, expression of affection, listening skills.
+    * **Cultural Nuances:** Expanded section for various cultural practices beyond lobola, including family roles, community expectations, language.
+* **User-Generated Question Interface:** A simple UI for users to type their question, provide their answer, and categorize it if they wish (or a general "My Questions" category).
+* **Verification of UGQs:** A mechanism (potentially simple keyword check initially, or manual review in a later phase) to guide users if their UGQ is very similar to an existing platform question, suggesting they use the platform's question for better comparative insights.
