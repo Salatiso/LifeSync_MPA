@@ -1,601 +1,696 @@
-// Firebase SDK imports (Modular v11.x.x)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { 
-    getAuth, 
-    onAuthStateChanged, 
-    signInWithEmailAndPassword, 
-    createUserWithEmailAndPassword, 
-    GoogleAuthProvider, 
-    signInWithPopup, 
-    signOut,
-    updateProfile,
-    signInAnonymously,
-    signInWithCustomToken
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { 
-    getFirestore, 
-    doc, 
-    setDoc, 
-    getDoc, 
-    addDoc, 
-    updateDoc, 
-    deleteDoc, 
-    collection, 
-    query, 
-    where, 
-    getDocs,
-    serverTimestamp,
-    Timestamp,
-    arrayUnion,
-    arrayRemove 
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, addDoc, deleteDoc, getDocs, collection, query, where, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
 
-// Firebase Configuration & Initialization
-const firebaseConfigFromGlobal = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
-const initialAuthTokenFromGlobal = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-const appIdFromGlobal = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAW0SakPbUUfpK-gD4SHMIQzlEhpMLzUbI",
+  authDomain: "lifesyncapp-391ab.firebaseapp.com",
+  projectId: "lifesyncapp-391ab",
+  storageBucket: "lifesyncapp-391ab.firebasestorage.app",
+  messagingSenderId: "617714109567",
+  appId: "1:617714109567:web:b7f3cf016d6f7348b1434a",
+  measurementId: "G-7XKHR48S14"
+};
 
-let app;
-let auth;
-let db;
-let storage;
+// Initialize Firebase
 let firebaseInitialized = false;
-let currentUserId = null;
-let isTempUser = false;
-
+let app, auth, db, storage, analytics;
 try {
-    if (firebaseConfigFromGlobal) {
-        app = initializeApp(firebaseConfigFromGlobal);
-        auth = getAuth(app);
-        db = getFirestore(app);
-        storage = getStorage(app);
-        firebaseInitialized = true;
-        console.log("Firebase initialized successfully with dynamic config.");
-    } else {
-        console.warn("Firebase configuration not found. Firebase features will be limited.");
-        const body = document.querySelector('body');
-        const errorDiv = document.createElement('div');
-        errorDiv.textContent = "Service configuration missing. Some features may not be available.";
-        errorDiv.style.cssText = "background-color: var(--accent-pink-vibrant); color: var(--text-primary-light); padding: 10px; text-align: center; position: fixed; bottom: 0; width: 100%; z-index: 5000;";
-        if(body) body.appendChild(errorDiv);
-    }
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+    storage = getStorage(app);
+    analytics = getAnalytics(app);
+    firebaseInitialized = true;
+    console.log("Firebase initialized successfully");
 } catch (error) {
     console.error("Firebase initialization error:", error);
-    const body = document.querySelector('body');
-    const errorDiv = document.createElement('div');
-    errorDiv.textContent = "Error connecting to services. Some features may not be available.";
-    errorDiv.style.cssText = "background-color: var(--accent-pink-vibrant); color: var(--text-primary-light); padding: 10px; text-align: center; position: fixed; bottom: 0; width: 100%; z-index: 5000;";
-    if(body) body.appendChild(errorDiv);
 }
 
-// i18next Internationalization
-const translations = { 
+// i18next Initialization
+const resources = {
     en: {
         translation: {
             title: "LifeSync - Deepen Your Connections",
-            nav: { brand: "LifeSync", home: "Home", assessments: "Assessments", tools: "Tools", resources: "Resources", profile: "My Profile", login: "Login", register: "Register", logout: "Logout" },
+            nav: {
+                brand: "LifeSync",
+                home: "Home",
+                assessments: "Assessments",
+                tools: "Tools",
+                resources: "Resources",
+                ugq: "My Questions",
+                profile: "My Profile",
+                sync: "Couple Sync",
+                login: "Login",
+                register: "Register",
+                logout: "Logout"
+            },
             landing: {
                 heroTitle: "Beyond the Swipe: Discover True Compatibility",
-                heroSubtitle: "LifeSync empowers you to understand yourself and what you truly need in any significant relationship. Build your dynamic, lifelong profile, 'Sync Up' for profound connections, and always be ready for your best relationship journey.",
+                heroSubtitle: "LifeSync empowers you to understand yourself and what you truly need in any significant relationship...",
                 heroCta: "Explore Assessments",
-                takeAssessmentCta: "Take an Assessment",
                 benefitsTitle: "Why LifeSync? The Path to Deeper Understanding.",
                 benefitsSubtitle: "LifeSync is more than an app; it's your companion for relationship clarity and growth.",
-                benefit1: { title: "Build Your Lifelong Profile", description: "Create a rich, evolving profile that captures your values, preferences, and experiences – your personal relationship blueprint." },
-                benefit2: { title: "Understand Yourself Deeper", description: "Engage with 150+ culturally aware questions. Gain personalized insights into your needs and compatibility factors." },
-                benefit3: { title: "Ready to 'Sync Up'?", description: "Connect with a partner on a new level. Securely share and compare what truly matters, with full, granular consent." },
-                benefitImport: { title: "Seamless Profile Building", description: "Easily import data from existing social/dating profiles or use AI assistance to extract info from documents like your CV. Spend less time typing, more time connecting." },
+                benefit1: {
+                    title: "Build Your Lifelong Profile",
+                    description: "Create a rich, evolving profile that captures your values..."
+                },
+                benefit2: {
+                    title: "Understand Yourself Deeper",
+                    description: "Engage with 150+ culturally aware questions..."
+                },
+                benefit3: {
+                    title: "Ready to 'Sync Up'?",
+                    description: "Connect with a partner on a new level..."
+                },
+                benefitImport: {
+                    title: "Seamless Profile Building",
+                    description: "Easily import data from existing social/dating profiles..."
+                },
+                learnMoreClose: "Close",
                 getStartedTitle: "Ready to Begin Your Journey?",
-                getStartedSubtitle: "Create your free LifeSync profile today and take the first step towards more meaningful connections.",
+                getStartedSubtitle: "Create your free LifeSync profile today...",
                 registerNow: "Register Your Profile",
-                loginExisting: "Login",
-                learnMoreClose: "Close"
+                loginExisting: "Login"
             },
-            assessments: { 
+            login: {
+                title: "Login to LifeSync",
+                subtitle: "Access your profile, assessments, and synced data.",
+                emailLabel: "Email:",
+                emailPlaceholder: "Enter your email",
+                passwordLabel: "Password:",
+                passwordPlaceholder: "Enter your password",
+                submit: "Login",
+                google: "Login with Google",
+                tempProfilePrompt: "Don't want to sign in? Try LifeSync with a temporary profile:",
+                tempProfileBtn: "Create Temporary Profile",
+                loginTempProfileBtn: "Login with Temporary Code"
+            },
+            register: {
+                title: "Create Your LifeSync Account",
+                subtitle: "Start building your insightful relationship profile.",
+                nameLabel: "Name:",
+                namePlaceholder: "Enter your name",
+                emailLabel: "Email:",
+                emailPlaceholder: "Enter your email",
+                passwordLabel: "Password:",
+                passwordPlaceholder: "Create a password",
+                submit: "Register",
+                google: "Register with Google"
+            },
+            tempProfile: {
+                title: "Create Temporary Profile",
+                subtitle: "Create a temporary profile to explore LifeSync for 90 days.",
+                usernameLabel: "Username:",
+                usernamePlaceholder: "Choose a username",
+                createBtn: "Create Profile",
+                codeInstructions: "Your temporary profile has been created! Use this code to log in:",
+                expiryNote: "This profile will expire in 90 days. Save your username and code securely!",
+                gotItBtn: "I've Saved It!"
+            },
+            tempProfileLogin: {
+                title: "Login with Temporary Profile",
+                usernameLabel: "Username:",
+                usernamePlaceholder: "Enter your username",
+                codeLabel: "Code:",
+                codePlaceholder: "Enter your code",
+                submit: "Login"
+            },
+            search: {
+                title: "Search LifeSync",
+                placeholder: "Search assessments, resources, or profiles...",
+                submit: "Search"
+            },
+            assessments: {
                 title: "Discover Your Compatibility",
-                subtitle: "Engage with our assessments to gain valuable insights into your relationship dynamics. Assign weights to what matters most to you!",
-                quickCompat: { 
+                subtitle: "Engage with our assessments to gain valuable insights...",
+                note: "More in-depth assessments on finances, cultural values...",
+                quickCompat: {
                     title: "Quick Compatibility Check",
-                    description: "A fast way for you and a potential partner to get an initial feel for alignment. Choose your depth!",
-                    basicBtn: "Quick Sync (5 Q's)",
-                    intermediateBtn: "Deeper Dive (10 Q's)",
-                    advancedBtn: "Full Spectrum (15 Q's)",
-                    importanceLabel: "Importance (1-5):",
+                    description: "A fast way to see how well you might align with a partner.",
+                    basicBtn: "Basic (5 Qs)",
+                    intermediateBtn: "Intermediate (10 Qs)",
+                    advancedBtn: "Advanced (15 Qs)",
                     progressQuestion: "Question",
                     progressOf: "of",
+                    importanceLabel: "How important is this to you? (1-5)",
                     nextBtn: "Next",
-                    resultsTitle: "Quick Sync Results!",
-                    retryBtn: "Try Another Level",
-                    questions: { 
-                        q_financial_stability: "How important is financial stability to you?",
-                        q_indoors_outdoors: "Do you prefer spending time indoors or outdoors?",
-                        q_personal_space: "How often do you need personal space?",
-                        q_spontaneity_planning: "Do you value spontaneity or planning more?",
-                        q_family_involvement: "How important is family involvement in your relationship?",
-                        q_comm_style: "What's your preferred communication style in disagreements?",
-                        q_conflict_resolution: "How do you typically approach conflict resolution?",
-                        q_social_circle: "Do you prefer a small, close-knit social circle or a large network?",
-                        q_travel_preference: "What's your ideal type of vacation?",
-                        q_dietary_habits: "Are you adventurous with food or prefer familiar options?",
-                        q_long_term_goals: "What are your primary long-term life goals?",
-                        q_parenting_style: "If applicable, what's your general view on parenting styles?",
-                        q_spirituality: "How important is spirituality or religion in your life?",
-                        q_political_views: "How do you approach differing political views in a partner?",
-                        q_cultural_background_match: "How important is a similar cultural background in a partner?"
-                    },
-                    options: { 
-                        opt_not_important: "Not important", opt_somewhat_important: "Somewhat important", opt_very_important: "Very important",
-                        opt_indoors: "Indoors", opt_outdoors: "Outdoors", opt_both: "Both equally",
-                        opt_rarely: "Rarely", opt_sometimes: "Sometimes", opt_often: "Often",
-                        opt_spontaneity: "Spontaneity", opt_planning: "Planning",
-                        opt_direct: "Direct & Open", opt_indirect: "Indirect & Cautious",
-                        opt_discuss_now: "Discuss immediately", opt_cool_off: "Cool off first",
-                        opt_small_circle: "Small circle", opt_large_network: "Large network",
-                        opt_relaxing: "Relaxing (beach, spa)", opt_adventure: "Adventure (hiking, exploring)",
-                        opt_anything: "Eat anything", opt_specific_diet: "Specific diet/preferences",
-                        opt_career_focus: "Career focused", opt_family_focus: "Family focused", opt_balance_both: "Balance both",
-                        opt_strict: "Strict", opt_lenient: "Lenient", opt_authoritative: "Authoritative (balanced)",
-                        opt_very_spiritual: "Very spiritual/religious", opt_somewhat_spiritual: "Somewhat spiritual/religious", opt_not_spiritual: "Not spiritual/religious",
-                        opt_similar_views: "Prefer similar views", opt_differences_ok: "Differences are okay/enriching",
-                        opt_important_match: "Important match", opt_not_important_match: "Not an important match"
-                    },
-                    results: { 
+                    resultsTitle: "Your Quick Compatibility Results",
+                    results: {
                         completed: "You completed the",
-                        checkWith: "compatibility check with",
-                        answers: "answers"
+                        checkWith: "check with",
+                        answers: "answers."
+                    },
+                    retryBtn: "Try Again",
+                    questions: {
+                        q_financial_stability: "How important is financial stability to you?",
+                        q_indoors_outdoors: "Do you prefer indoors or outdoors activities?",
+                        q_personal_space: "How often do you need personal space?",
+                        q_spontaneity_planning: "Do you prefer spontaneity or planning?",
+                        q_family_involvement: "How important is family involvement to you?",
+                        q_comm_style: "What is your communication style?",
+                        q_conflict_resolution: "How do you handle conflict?",
+                        q_social_circle: "What kind of social circle do you prefer?",
+                        q_travel_preference: "What is your travel preference?",
+                        q_dietary_habits: "What are your dietary habits?",
+                        q_long_term_goals: "What are your long-term goals?",
+                        q_parenting_style: "What parenting style do you prefer?",
+                        q_spirituality: "How spiritual are you?",
+                        q_political_views: "How important are similar political views?",
+                        q_cultural_background_match: "How important is a cultural background match?"
+                    },
+                    options: {
+                        opt_not_important: "Not Important",
+                        opt_somewhat_important: "Somewhat Important",
+                        opt_very_important: "Very Important",
+                        opt_indoors: "Indoors",
+                        opt_outdoors: "Outdoors",
+                        opt_both: "Both",
+                        opt_rarely: "Rarely",
+                        opt_sometimes: "Sometimes",
+                        opt_often: "Often",
+                        opt_spontaneity: "Spontaneity",
+                        opt_planning: "Planning",
+                        opt_direct: "Direct",
+                        opt_indirect: "Indirect",
+                        opt_discuss_now: "Discuss Immediately",
+                        opt_cool_off: "Cool Off First",
+                        opt_small_circle: "Small Circle",
+                        opt_large_network: "Large Network",
+                        opt_relaxing: "Relaxing",
+                        opt_adventure: "Adventure",
+                        opt_anything: "I Eat Anything",
+                        opt_specific_diet: "Specific Diet",
+                        opt_career_focus: "Career Focus",
+                        opt_family_focus: "Family Focus",
+                        opt_balance_both: "Balance Both",
+                        opt_strict: "Strict",
+                        opt_lenient: "Lenient",
+                        opt_authoritative: "Authoritative",
+                        opt_very_spiritual: "Very Spiritual",
+                        opt_somewhat_spiritual: "Somewhat Spiritual",
+                        opt_not_spiritual: "Not Spiritual",
+                        opt_similar_views: "Similar Views Important",
+                        opt_differences_ok: "Differences Are Okay",
+                        opt_important_match: "Important to Match",
+                        opt_not_important_match: "Not Important to Match"
                     }
                 },
-                profileBuilder: { 
-                    title: "My Relationship Profile Builder",
-                    description: "Build your detailed LifeSync profile by answering these questions about your views, preferences, lifestyle, and more. This forms the basis for future syncs and deeper insights.",
-                    q1: "What is your primary love language for GIVING affection?", 
-                    questions: { 
-                        "profileBuilder.q_love_language_give": "What is your primary love language for GIVING affection?",
-                        "profileBuilder.q_love_language_receive": "What is your primary love language for RECEIVING affection?",
-                        "profileBuilder.q_financial_transparency_scale": "On a scale of 1 (not at all) to 5 (very), how important is financial transparency to you in a serious relationship?",
-                        "profileBuilder.q_stress_handling": "How do you typically handle stress or difficult emotions?",
-                        "profileBuilder.q_family_involvement_expectations": "What are your expectations regarding family involvement (e.g., holidays, major decisions)?",
-                        "profileBuilder.q_spiritual_beliefs_match_importance": "How important is it for your partner to share your spiritual or religious beliefs?",
+                profileBuilder: {
+                    title: "Profile Builder",
+                    description: "Answer questions to build a detailed relationship profile.",
+                    start: "Start Profile Builder",
+                    progressQuestion: "Question",
+                    progressOf: "of",
+                    importanceLabel: "How important is this to you? (1-5)",
+                    nextBtn: "Next",
+                    resultsTitle: "Your Profile Builder Results",
+                    results: {
+                        completedWith: "You completed the Profile Builder with",
+                        answers: "answers."
+                    },
+                    reviewBtn: "Review Answers",
+                    viewProfileBtn: "View My Profile",
+                    questions: {
+                        "profileBuilder.q_love_language_give": "What is your primary love language when giving love?",
+                        "profileBuilder.q_love_language_receive": "What love language do you prefer to receive?",
+                        "profileBuilder.q_financial_transparency_scale": "How transparent are you about finances? (1-5)",
+                        "profileBuilder.q_stress_handling": "How do you handle stress?",
+                        "profileBuilder.q_family_involvement_expectations": "What are your expectations for family involvement?",
+                        "profileBuilder.q_spiritual_beliefs_match_importance": "How important is it that your spiritual beliefs match?",
                         "profileBuilder.q_children_stance": "What is your stance on having children?",
-                        "profileBuilder.q_past_relationships_discussion": "How do you feel about discussing past relationships with a new partner?",
-                        "profileBuilder.q_lobola_view": "What role does 'Lobola' (or similar cultural marriage customs) play in your view of marriage, if any?",
-                        "profileBuilder.q_household_responsibilities": "How do you envision division of household responsibilities in a cohabiting relationship?"
+                        "profileBuilder.q_past_relationships_discussion": "How open are you about discussing past relationships?",
+                        "profileBuilder.q_lobola_view": "What is your view on lobola/dowry?",
+                        "profileBuilder.q_household_responsibilities": "How do you prefer to handle household responsibilities?"
                     },
-                    options: { 
-                        words: "Words of Affirmation", acts: "Acts of Service", gifts: "Receiving Gifts", quality_time: "Quality Time", touch: "Physical Touch",
-                        "1": "1 (Not at all)", "2": "2", "3": "3 (Moderately)", "4": "4", "5": "5 (Very)",
-                        talk_it_out: "Talk it out", alone_time: "Need alone time", distract_myself: "Distract myself", exercise: "Exercise/Activity",
-                        very_involved: "Very involved", moderately_involved: "Moderately involved", minimal_involvement: "Minimal involvement",
-                        very_important: "Very important", somewhat_important: "Somewhat important", not_important: "Not important",
-                        definitely_want: "Definitely want them", open_to_discussion: "Open to discussion", prefer_not: "Prefer not to have children", undecided: "Undecided",
-                        open_book: "Open book, happy to share", some_details_ok: "Some details are okay, if relevant", prefer_not_much: "Prefer not to discuss much",
-                        essential_tradition: "Essential tradition", important_cultural: "Important cultural aspect", open_to_modern: "Open to modern interpretations/discussion", not_applicable: "Not applicable/relevant to me",
-                        strictly_50_50: "Strictly 50/50", based_on_time_skill: "Based on who has more time/skill", flexible_circumstances: "Flexible, depends on circumstances", outsource_some: "Prefer to outsource some tasks"
-                    },
-                    importanceLabel: "How crucial is this for you? (1-5):",
-                    progressQuestion: "Question", progressOf: "of", nextBtn: "Next Question",
-                    resultsTitle: "Profile Section Complete!", results: { 
-                        completedWith: "You completed your profile builder with",
-                        answers: "answers"
-                    },
-                    reviewBtn: "Review Answers", viewProfileBtn: "View My Profile"
+                    options: {
+                        words: "Words of Affirmation",
+                        acts: "Acts of Service",
+                        gifts: "Receiving Gifts",
+                        quality_time: "Quality Time",
+                        touch: "Physical Touch",
+                        "1": "1 (Not Transparent)",
+                        "2": "2",
+                        "3": "3 (Neutral)",
+                        "4": "4",
+                        "5": "5 (Very Transparent)",
+                        talk_it_out: "Talk It Out",
+                        alone_time: "Need Alone Time",
+                        distract_myself: "Distract Myself",
+                        exercise: "Exercise",
+                        very_involved: "Very Involved",
+                        moderately_involved: "Moderately Involved",
+                        minimal_involvement: "Minimal Involvement",
+                        very_important: "Very Important",
+                        somewhat_important: "Somewhat Important",
+                        not_important: "Not Important",
+                        definitely_want: "Definitely Want",
+                        open_to_discussion: "Open to Discussion",
+                        prefer_not: "Prefer Not",
+                        undecided: "Undecided",
+                        open_book: "Open Book",
+                        some_details_ok: "Some Details Okay",
+                        prefer_not_much: "Prefer Not to Share Much",
+                        essential_tradition: "Essential Tradition",
+                        important_cultural: "Important but Cultural",
+                        open_to_modern: "Open to Modern Takes",
+                        not_applicable: "Not Applicable",
+                        strictly_50_50: "Strictly 50/50",
+                        based_on_time_skill: "Based on Time/Skill",
+                        flexible_circumstances: "Flexible by Circumstances",
+                        outsource_some: "Outsource Some Tasks"
+                    }
+                }
+            },
+            tools: {
+                title: "Relationship Enhancement Tools",
+                subtitle: "Access a suite of tools designed to foster communication...",
+                communication: {
+                    title: "Communication Guides",
+                    description: "Structured prompts and guides for discussing sensitive topics..."
                 },
-                note: "More in-depth assessments on finances, cultural values (e.g., lobola discussions, family roles), lifestyle, and long-term goals are available once you create your profile and connect with a partner."
+                milestone: {
+                    title: "Milestone & Date Tracker",
+                    description: "Log important dates, anniversaries, and relationship milestones..."
+                },
+                monitoring: {
+                    title: "Parameter Monitoring",
+                    description: "Track changes in key relationship aspects..."
+                },
+                conflict: {
+                    title: "Conflict Resolution Aids",
+                    description: "Tools to help navigate disagreements constructively..."
+                },
+                goals: {
+                    title: "Shared Goals & Dreams",
+                    description: "Define and track progress towards shared aspirations..."
+                },
+                closure: {
+                    title: "Relationship Closure (If Needed)",
+                    description: "Tools to facilitate a respectful and clear process..."
+                },
+                comingSoon: "Coming Soon",
+                explore: "Explore Resources"
             },
-            tools: { 
-                title: "Relationship Enhancement Tools", 
-                subtitle: "Access a suite of tools designed to foster communication, track progress, and navigate challenges together.",
-                explore: "Explore Resources",
-                communication: {title: "Communication Guides", description: "Structured prompts and guides for discussing sensitive topics like finances, family expectations, and future plans."},
-                milestone: { title: "Milestone & Date Tracker", description: "Log important dates, anniversaries, and relationship milestones. Get reminders and celebrate together." },
-                monitoring: { title: "Parameter Monitoring", description: "Track changes in key relationship aspects (e.g., frequency of affirming words, shared activities) and get gentle nudges." },
-                conflict: { title: "Conflict Resolution Aids", description: "Tools to help navigate disagreements constructively, including structured feedback exchange." },
-                goals: { title: "Shared Goals & Dreams", description: "Define and track progress towards shared aspirations as a couple." },
-                closure: { title: "Relationship Closure (If Needed)", description: "Tools to facilitate a respectful and clear process if a relationship ends." },
-                comingSoon: "Coming Soon" 
-            },
-            resources: { 
+            resources: {
                 pageTitle: "Relationship Resources Hub",
-                pageSubtitle: "Explore a curated list of tools, services, and information to support your relationship journey.",
+                pageSubtitle: "Explore a curated list of tools, services, and information...",
                 wizard: {
                     title: "Resource Discovery Wizard",
                     introTitle: "How to Use This Section",
-                    introText: "Use the search bar below to find specific resources, or browse through the categories. Click on a category to see available items. Automated suggestions based on your profile will be available soon!",
-                    automatedIntro: "Based on your profile, we might have some suggestions for you (Feature Coming Soon!).",
+                    introText: "Use the search bar below to find specific resources...",
+                    automatedIntro: "Based on your profile, we might have some suggestions...",
                     customizeBtn: "Customize Suggestions (Coming Soon)",
                     searchLabel: "Search All Resources:",
-                    searchPlaceholder: "e.g., counseling, dating apps...",
+                    searchPlaceholder: "Enter keywords (e.g., communication, finance)",
                     searchBtn: "Search",
                     browseCategories: "Or Browse Categories:"
                 },
-                backToCategories: "Back to Categories",
+                noItemsInCategory: "No items found matching your search.",
                 visitSite: "Visit Site",
-                noItemsInCategory: "No items listed in this category yet.",
-                category: { 
-                    dating: "Dating & Meeting Platforms",
-                    counseling: "Relationship Counseling & Therapy",
-                    communication_guides: "Communication Guides",
-                    conflict_resolution_aids: "Conflict Resolution Aids",
-                    relationship_closure_tools: "Relationship Closure Tools",
-                    emergency: "Emergency Contacts Summary"
+                category: {
+                    communication: "Communication & Connection",
+                    finance: "Finance & Planning",
+                    cultural: "Cultural & Family Dynamics",
+                    health: "Health & Wellness",
+                    legal: "Legal & Mediation",
+                    closure: "Closure & Moving Forward"
                 },
-                datingDesc: { 
-                    tinder: "Popular swipe-based dating app for meeting new people.",
-                    bumble: "Dating app where women make the first move."
+                communicationDesc: {
+                    comm1: "Tool for Better Conversations",
+                    comm2: "Active Listening Guide",
+                    comm3: "Conflict Resolution App"
                 },
-                counselingDesc: {
-                    famsa: "Family and Marriage Society of SA - Offers counseling and support."
+                financeDesc: {
+                    fin1: "Shared Budget Planner",
+                    fin2: "Financial Transparency Guide",
+                    fin3: "Investment Compatibility Quiz"
                 },
-                emergencyDesc: {
-                    lifeLineSAEmergency: "LifeLine SA: 0861 322 322 (24/7 emotional support and crisis intervention)."
+                culturalDesc: {
+                    cult1: "Cultural Values Assessment",
+                    cult2: "Family Tradition Planner",
+                    cult3: "Intercultural Relationship Guide"
+                },
+                healthDesc: {
+                    health1: "Mental Wellness Tracker",
+                    health2: "Stress Management Techniques",
+                    health3: "Couples Therapy Finder"
+                },
+                legalDesc: {
+                    legal1: "Prenup Guide",
+                    legal2: "Mediation Services",
+                    legal3: "Legal Advice for Couples"
+                },
+                closureDesc: {
+                    closure1: "Breakup Recovery Plan",
+                    closure2: "Respectful Closure Guide",
+                    closure3: "Post-Relationship Counseling"
                 }
             },
-            profile: { 
-                title: "My LifeSync Profile", 
+            ugq: {
+                title: "My Questions",
+                subtitle: "Create your own questions to explore specific areas of compatibility...",
+                yourQuestionsTitle: "Your Created Questions",
+                privateLabel: "Keep this question private (visible only to you and synced partners)"
+            },
+            profile: {
+                title: "My LifeSync Profile",
                 subtitle: "This is your personal space. Manage your details, track your progress, and control your sharing preferences.",
                 completionTitle: "Profile Completion",
-                completionHint: "Complete your profile to unlock more insights and features!",
+                completionHint: "Complete more assessments and add details to increase your profile score!",
+                basicInfoTitle: "Basic Information",
+                type: "Profile Type",
+                typePermanent: "Permanent",
+                typeTemporary: "Temporary",
+                name: "Name",
+                email: "Email",
+                emailTemp: "Not available for temporary profiles",
+                expiresOn: "Expires on",
+                guestName: "Guest User",
+                guestEmail: "No email (Guest Mode)",
                 uploadPicture: "Upload Picture",
                 avatarComingSoon: "(Avatars coming soon)",
                 makePublic: "Make Profile Public (to registered users)",
-                basicInfoTitle: "Basic Information",
                 dobLabel: "Date of Birth:",
                 genderLabel: "Gender:",
                 selectOption: "Select...",
-                genderMale: "Male", genderFemale: "Female", genderNonBinary: "Non-binary", genderOther: "Other", genderPreferNot: "Prefer not to say",
+                genderMale: "Male",
+                genderFemale: "Female",
+                genderNonBinary: "Non-binary",
+                genderOther: "Other",
+                genderPreferNot: "Prefer not to say",
                 locationLabel: "Location (City, Country):",
-                locationPlaceholder: "e.g., Johannesburg, South Africa",
+                locationPlaceholder: "e.g., Cape Town, South Africa",
                 lifestyleTitle: "Lifestyle & Interests",
                 hobbiesLabel: "Hobbies & Interests (comma-separated):",
-                hobbiesPlaceholder: "e.g., hiking, reading, coding",
+                hobbiesPlaceholder: "e.g., hiking, reading, cooking",
                 educationLabel: "Education Level:",
-                educationPlaceholder: "e.g., Bachelor's Degree in CS",
+                educationPlaceholder: "e.g., Bachelor's Degree",
                 occupationLabel: "Occupation/Profession:",
-                occupationPlaceholder: "e.g., Software Developer",
+                occupationPlaceholder: "e.g., Software Engineer",
                 aboutMeLabel: "About Me (Short Bio):",
-                aboutMePlaceholder: "Tell us a bit about yourself...",
+                aboutMePlaceholder: "Tell us about yourself...",
                 saveProfileBtn: "Save Profile Details",
-                assessmentsTitle: "Completed Assessments:", 
-                partnersTitle: "Synced Partners:", 
-                noPartners: "No partner synced yet.", 
-                connectBtn: "Connect with Partner", 
-                dataTitle: "Assessment Profile Data & Preferences:", 
-                dataNote: "This section shows data from your completed assessments.",
-                importTitle: "Import Your Data:", 
-                importInstructionsSocial: "Upload your data file (e.g., LinkedIn ZIP, Facebook JSON) to enhance your profile.", 
+                importTitle: "Import Your Data:",
+                importInstructionsSocial: "Upload your data file (e.g., LinkedIn ZIP, Facebook JSON) to enhance your profile.",
                 importBtnSocial: "Import Social/Dating Data",
                 importInstructionsAI: "Use AI to extract info from documents (e.g., CV). Process externally, then upload the generated JSON.",
                 aiUploadLabel: "Upload AI-Processed JSON:",
                 importBtnAI: "Import AI Processed Data",
                 aiToolNote: "Note: Use tools like Gemini, Grok, etc., to process your documents into a structured JSON first.",
-                loadingAssessments: "Loading assessments...", 
-                loadingData: "Loading data...",
-                typePermanent: "Permanent Account", 
-                typeTemporary: "Temporary Profile",
-                emailTemp: "Email: (Temporary Profile - Not Set)",
-                expiresOn: "Expires on:",
-                guestName: "Guest User",
-                guestEmail: "Email: Not logged in",
-                noAssessmentsLoggedIn: "Log in or create a profile to see completed assessments.",
-                noDataLoggedIn: "Log in or create a profile to see your data.",
-                noAssessmentsYet: "No assessments completed yet. Explore the Assessments tab!",
-                noProfileDataYet: "No profile data added yet. Complete assessments or import data.",
-                completedOn: "Completed on",
-                ugqTitle: "My Custom Questions", 
-                ugqTitleLong: "My Questions", 
+                assessmentsTitle: "Completed Assessments:",
+                noAssessmentsYet: "You haven't completed any assessments yet.",
+                noAssessmentsLoggedIn: "Log in to see your completed assessments.",
+                partnersTitle: "Synced Partners:",
+                noPartners: "No partner synced yet.",
+                connectBtn: "Connect with Partner",
+                dataTitle: "Assessment Profile Data & Preferences:",
+                dataNote: "This section shows data from your completed assessments.",
+                ugqTitleLong: "My Questions",
                 ugqCreateTitle: "Create a New Question",
                 ugqQuestionLabel: "Your Question:",
-                ugqQuestionPlaceholder: "e.g., What's your ideal Sunday?",
+                ugqQuestionPlaceholder: "e.g., What's your favorite way to spend a weekend?",
                 ugqAnswerLabel: "Your Answer:",
-                ugqAnswerPlaceholder: "e.g., A mix of adventure and relaxation.",
+                ugqAnswerPlaceholder: "e.g., I love to go hiking and then relax with a good book.",
                 ugqCategoryLabel: "Category (Optional):",
-                ugqCategoryPlaceholder: "e.g., Lifestyle, Values",
+                ugqCategoryPlaceholder: "e.g., Lifestyle",
                 ugqSaveBtn: "Save Question",
-                ugqNone: "You haven't added any custom questions yet."
+                ugqNone: "You haven't created any questions yet."
             },
-            ugq: { 
-                subtitle: "Create your own questions to explore specific areas of compatibility that matter most to you and your partner.",
-                privateLabel: "Keep this question private (only visible to you and synced partners you share with)",
-                yourQuestionsTitle: "Your Created Questions"
-            },
-            sync: { 
+            sync: {
                 title: "Couple Sync",
                 subtitle: "Connect with your partner to share insights and grow together. All sharing requires mutual consent.",
                 connectTitle: "Connect with Partner",
                 partnerUsernameLabel: "Partner's Username:",
-                partnerUsernamePlaceholder: "Enter your partner's LifeSync username",
+                partnerUsernamePlaceholder: "Enter your partner's username",
                 sendRequest: "Send Sync Request",
                 pendingTitle: "Pending Requests",
                 noPending: "No pending requests.",
                 syncedTitle: "Synced Partners",
                 noSynced: "You are not synced with any partners yet."
             },
-            notifications: { title: "Notifications", welcome: "Welcome to LifeSync! Complete your profile to get started." },
-            footer: { privacy: "Privacy Policy", terms: "Terms of Service", built: "Built with <i class='fa-solid fa-heart' style='color: var(--accent-pink-vibrant)'></i> for LifeSync."},
-            login: { 
-                title: "Login to LifeSync", 
-                subtitle: "Access your profile, assessments, and synced data.",
-                emailLabel: "Email:", emailPlaceholder: "your@email.com",
-                passwordLabel: "Password:", passwordPlaceholder: "Your password",
-                submit: "Login", google: "Login with Google",
-                tempProfilePrompt: "Don't want to sign in? Try LifeSync with a temporary profile:",
-                tempProfileBtn: "Create Temporary Profile", loginTempProfileBtn: "Login with Temporary Code"
-            },
-            register: { 
-                title: "Create Your LifeSync Account",
-                subtitle: "Start building your insightful relationship profile.",
-                nameLabel: "Name:", namePlaceholder: "Your Name",
-                emailLabel: "Email:", emailPlaceholder: "your@email.com",
-                passwordLabel: "Password:", passwordPlaceholder: "Create a password (min. 6 characters)",
-                submit: "Register", google: "Register with Google"
-            },
-            tempProfile: { 
-                title: "Create Temporary Profile",
-                subtitle: "Create a temporary profile to explore LifeSync for 90 days.",
-                usernameLabel: "Username:", usernamePlaceholder: "Choose a username",
-                createBtn: "Create Profile & Get Code",
-                codeInstructions: "Your temporary profile has been created! Use this code to log in:",
-                expiryNote: "This profile will expire in 90 days. Save your username and code securely!",
-                gotItBtn: "I've Saved It!"
-            },
-            tempProfileLogin: { 
-                title: "Login with Temporary Profile",
-                usernameLabel: "Username:", usernamePlaceholder: "Your username",
-                codeLabel: "Code:", codePlaceholder: "Your access code",
-                submit: "Login"
-            },
-            search: { 
-                title: "Search LifeSync",
-                placeholder: "Search profiles, assessments, resources...",
-                submit: "Search",
-                button: "Search" 
-            },
-            alerts: { 
-                selectionNeeded: "Please select an answer to proceed.",
-                loginSuccess: "Logged in successfully! Welcome back.",
-                loginFailed: "Login failed. Please check your email and password.",
-                registerSuccess: "Registered successfully! Please log in to continue.",
-                registerFailed: "Registration failed. The email might already be in use or an error occurred.",
-                tempProfileCreated: "Temporary profile created! Your access code is displayed below. Please save it securely.",
-                tempProfileLoginSuccess: "Logged in with temporary profile successfully!",
-                tempProfileLoginFailed: "Invalid username or code. Please check and try again.",
-                tempProfileExpired: "This temporary profile has expired. Please register for a permanent account.",
-                importSuccess: "Social media data imported successfully! Check your profile.",
-                importFailed: "Failed to import data. Please ensure the file format is correct or try again.",
-                aiImportSuccess: "AI processed data imported successfully!",
-                aiImportFailed: "Failed to import AI processed data. Ensure it's valid JSON from LifeSync AI processing.",
-                logoutSuccess: "Logged out successfully!",
-                selectFileFirst: "Please select a file first before importing.",
-                processingFile: "Processing file...",
-                zipParsingNotImplemented: "ZIP file processing is not fully implemented in this example. Please try a JSON file if available.",
-                unsupportedFileFormat: "Unsupported file format. Please upload a JSON file.",
-                fileReadError: "Error reading the selected file.",
-                noActiveProfileForImport: "No active profile to import data to. Please log in or create a temporary profile first.",
-                loginToImport: "Please log in or create a temporary profile to import data.",
-                ugqSaved: "Your custom question has been saved!",
-                ugqError: "Error saving custom question. Please try again.",
-                ugqFieldsMissing: "Please fill in both the question and your answer.",
+            alerts: {
+                loginSuccess: "Logged in successfully!",
+                loginFailed: "Login failed. Please check your credentials.",
+                registerSuccess: "Account created successfully!",
+                registerFailed: "Registration failed. Please try again.",
+                tempProfileCreated: "Temporary profile created successfully!",
+                tempProfileFailed: "Failed to create temporary profile.",
+                tempProfileLoginSuccess: "Logged in with temporary profile!",
+                tempProfileLoginFailed: "Temporary profile login failed. Check your username and code.",
+                tempProfileExpired: "This temporary profile has expired.",
+                selectionNeeded: "Please select an option to proceed.",
                 profileDetailsSaved: "Profile details saved successfully!",
                 profileDetailsError: "Error saving profile details.",
                 imageUploadSuccess: "Profile image uploaded successfully!",
-                imageUploadError: "Error uploading profile image."
+                imageUploadError: "Error uploading image.",
+                selectFileFirst: "Please select a file to import.",
+                loginToImport: "Please log in to import data.",
+                processingFile: "Processing your file...",
+                zipParsingNotImplemented: "ZIP file parsing is not yet implemented.",
+                importSuccess: "Data imported successfully!",
+                importFailed: "Failed to import data.",
+                aiImportSuccess: "AI-processed data imported successfully!",
+                aiImportFailed: "Failed to import AI-processed data.",
+                fileReadError: "Error reading the file.",
+                unsupportedFileFormat: "Unsupported file format. Please upload a JSON file.",
+                ugqFieldsMissing: "Please fill in both the question and answer.",
+                ugqSaved: "Question saved successfully!",
+                ugqError: "Error saving question."
+            },
+            notifications: {
+                welcome: "Welcome to LifeSync! Start by exploring assessments or building your profile."
+            },
+            footer: {
+                privacy: "Privacy Policy",
+                terms: "Terms of Service",
+                built: "Built with <3 for LifeSync."
             }
         }
     },
-    xh: { /* ... Xhosa translations ... */ },
-    zu: { /* ... Zulu translations ... */ },
-    af: { /* ... Afrikaans translations ... */ }
-};
-
-i18next
-    .use(i18nextBrowserLanguageDetector)
-    .init({
-        resources: translations,
-        fallbackLng: 'en',
-        debug: true,
-        interpolation: { escapeValue: false }
-    }, (err, t) => {
-        if (err) return console.error('i18next init error:', err);
-        updateUIWithTranslations();
-        initializeDynamicContent();
-    });
-
-function updateUIWithTranslations() {
-    document.querySelectorAll('[data-i18n]').forEach(elem => {
-        const key = elem.getAttribute('data-i18n');
-        if (elem.hasAttribute('data-i18n-placeholder')) {
-            const placeholderKey = elem.getAttribute('data-i18n-placeholder');
-            elem.setAttribute('placeholder', i18next.t(placeholderKey));
-        }
-        if (key) {
-            const translation = i18next.t(key);
-            if (elem.tagName === 'INPUT' && (elem.type === 'submit' || elem.type === 'button')) {
-                elem.value = translation;
-            } else {
-                elem.innerHTML = translation;
+    xh: {
+        translation: {
+            title: "LifeSync - Yandisa Uqhagamshelwano Lwakho",
+            nav: {
+                brand: "LifeSync",
+                home: "Ekhaya",
+                assessments: "Ukuvavanya",
+                tools: "Izixhobo",
+                resources: "Izixhobo",
+                ugq: "Imibuzo Yam",
+                profile: "Iprofayile Yam",
+                sync: "Ukuvumelanisa Kwesibini",
+                login: "Ngena",
+                register: "Bhalisa",
+                logout: "Phuma"
+            },
+            landing: {
+                heroTitle: "Ngaphaya kwe-Swipe: Fumanisa Ukuhambelana Okwenyani",
+                heroSubtitle: "I-LifeSync ikunika amandla okuziqonda kunye noko ukudingayo ngokwenene kulwalamano olubalulekileyo..."
             }
         }
-    });
-    const pageTitleElement = document.querySelector('title[data-i18n]');
-    if (pageTitleElement) {
-        pageTitleElement.textContent = i18next.t(pageTitleElement.getAttribute('data-i18n'));
+    },
+    zu: {
+        translation: {
+            title: "LifeSync - Julisa Ukuxhumana Kwakho",
+            nav: {
+                brand: "LifeSync",
+                home: "Ekhaya",
+                assessments: "Ukuhlola",
+                tools: "Amathuluzi",
+                resources: "Izinsiza",
+                ugq: "Imibuzo Yami",
+                profile: "Iphrofayili Yami",
+                sync: "Ukuvumelanisa Kwababili",
+                login: "Ngena",
+                register: "Bhalisa",
+                logout: "Phuma"
+            }
+        }
+    },
+    af: {
+        translation: {
+            title: "LifeSync - Verdiep Jou Verbindings",
+            nav: {
+                brand: "LifeSync",
+                home: "Tuis",
+                assessments: "Assesserings",
+                tools: "Gereedskap",
+                resources: "Hulpbronne",
+                ugq: "My Vrae",
+                profile: "My Profiel",
+                sync: "Paar Sinchronisasie",
+                login: "Meld Aan",
+                register: "Registreer",
+                logout: "Meld Af"
+            }
+        }
     }
+};
+
+i18next.use(i18nextBrowserLanguageDetector).init({
+    resources,
+    fallbackLng: 'en',
+    debug: true,
+    detection: {
+        order: ['localStorage', 'navigator'],
+        caches: ['localStorage']
+    }
+}, (err, t) => {
+    if (err) return console.error("i18next error:", err);
+    updateContent();
+});
+
+function updateContent() {
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        element.textContent = i18next.t(key);
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        element.placeholder = i18next.t(key);
+    });
 }
 
-document.getElementById('languageSelector')?.addEventListener('change', function() {
-    i18next.changeLanguage(this.value, (err, t) => {
-        if (err) return console.error('Error changing language:', err);
-        updateUIWithTranslations();
-        initializeDynamicContent();
+document.getElementById('languageSelector')?.addEventListener('change', (e) => {
+    i18next.changeLanguage(e.target.value, () => {
+        updateContent();
     });
 });
 
-// Global Variables & DOM Elements
+// DOM Elements
 const loginBtnNavEl = document.getElementById('loginBtnNav');
 const registerBtnNavEl = document.getElementById('registerBtnNav');
 const logoutBtnNavEl = document.getElementById('logoutBtnNav');
 const navProfileBtnEl = document.getElementById('navProfileBtn');
-const loginModalEl = document.getElementById('loginModal');
-const registerModalEl = document.getElementById('registerModal');
-const tempProfileModalEl = document.getElementById('tempProfileModal');
-const tempProfileLoginModalEl = document.getElementById('tempProfileLoginModal');
-const searchModalEl = document.getElementById('searchModal');
-const benefitModalEl = document.getElementById('benefitModal');
+const loginBtnCtaEl = document.getElementById('loginBtnCta');
+const registerBtnCtaEl = document.getElementById('registerBtnCta');
+const createTempProfileFromLoginModalBtnEl = document.getElementById('createTempProfileFromLoginModalBtn');
+const loginWithTempProfileModalBtnEl = document.getElementById('loginWithTempProfileModalBtn');
+const tempProfileGotItBtnEl = document.getElementById('tempProfileGotItBtn');
+const globalSearchTriggerBtnEl = document.getElementById('globalSearchTriggerBtn');
+const benefitModalCloseBtnEl = document.getElementById('benefitModalCloseBtn');
 const benefitModalTitleEl = document.getElementById('benefitModalTitle');
 const benefitModalDescriptionEl = document.getElementById('benefitModalDescription');
-const currentYearFooterEl = document.getElementById('currentYearFooter');
-const loadingOverlay = document.getElementById('loadingOverlay');
+document.getElementById('currentYearFooter').textContent = new Date().getFullYear();
 
-if(currentYearFooterEl) currentYearFooterEl.textContent = new Date().getFullYear();
+// Authentication State
+let currentUserId = null;
+let isTempUser = false;
+const appIdFromGlobal = 'lifesync-' + Math.random().toString(36).substring(2, 15);
 
-// Utility Functions
-function showLoading(show) {
-    if (loadingOverlay) loadingOverlay.style.display = show ? 'flex' : 'none';
+if (firebaseInitialized) {
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            currentUserId = user.uid;
+            isTempUser = false;
+            updateUIForLoggedInUser(user);
+            await updateProfileDisplay();
+        } else {
+            const tempProfile = JSON.parse(localStorage.getItem('tempProfile'));
+            if (tempProfile) {
+                currentUserId = tempProfile.id;
+                isTempUser = true;
+                updateUIForTempUser(tempProfile);
+                await updateProfileDisplay();
+            } else {
+                updateUIForLoggedOutUser();
+            }
+        }
+    });
 }
 
+function updateUIForLoggedInUser(user) {
+    loginBtnNavEl.style.display = 'none';
+    registerBtnNavEl.style.display = 'none';
+    logoutBtnNavEl.style.display = 'inline-block';
+    navProfileBtnEl.style.display = 'inline-block';
+}
+
+function updateUIForTempUser(tempProfile) {
+    loginBtnNavEl.style.display = 'none';
+    registerBtnNavEl.style.display = 'none';
+    logoutBtnNavEl.style.display = 'inline-block';
+    navProfileBtnEl.style.display = 'inline-block';
+}
+
+function updateUIForLoggedOutUser() {
+    loginBtnNavEl.style.display = 'inline-block';
+    registerBtnNavEl.style.display = 'inline-block';
+    logoutBtnNavEl.style.display = 'none';
+    navProfileBtnEl.style.display = 'none';
+    currentUserId = null;
+    isTempUser = false;
+}
+
+// Utility Functions
 function sanitizeInput(input) {
     const div = document.createElement('div');
     div.textContent = input;
     return div.innerHTML;
 }
 
-// Highlight Active Nav Link
-function highlightActiveNavLink() {
-    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-    const navLinks = document.querySelectorAll('nav .nav-links a');
-    navLinks.forEach(link => {
-        const href = link.getAttribute('href').split('/').pop();
-        if (href === currentPath) {
-            link.classList.add('active-nav');
-        } else {
-            link.classList.remove('active-nav');
-        }
-    });
-}
-
-// Modal Management
 function showModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if(modal) modal.classList.add('active');
+    document.getElementById(modalId).style.display = 'block';
 }
 
 function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if(modal) modal.classList.remove('active');
+    document.getElementById(modalId).style.display = 'none';
 }
 
-function closeAllModals() {
-    document.querySelectorAll('.modal.active').forEach(modal => modal.classList.remove('active'));
+function showLoading(show) {
+    document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
 }
 
-document.querySelectorAll('.modal .close-button').forEach(button => {
-    button.addEventListener('click', (e) => {
-        const modal = e.target.closest('.modal');
-        if(modal) closeModal(modal.id);
-    });
-});
+function showNotification(message, type = 'info') {
+    const notificationsArea = document.getElementById('notificationsArea');
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    notificationsArea.appendChild(notification);
+    setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => notification.remove(), 500);
+    }, 3000);
+}
 
-document.getElementById('benefitModalCloseBtn')?.addEventListener('click', () => closeModal('benefitModal'));
-
-window.addEventListener('click', (event) => {
-    document.querySelectorAll('.modal.active').forEach(modal => {
-        if (event.target == modal) {
-            closeModal(modal.id);
+function highlightActiveNavLink() {
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.classList.remove('active-nav');
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('active-nav');
         }
     });
-});
+}
 
+// Modal Event Listeners
 loginBtnNavEl?.addEventListener('click', () => showModal('loginModal'));
 registerBtnNavEl?.addEventListener('click', () => showModal('registerModal'));
-document.getElementById('createTempProfileFromLoginModalBtn')?.addEventListener('click', () => { closeModal('loginModal'); showModal('tempProfileModal'); });
-document.getElementById('loginWithTempProfileModalBtn')?.addEventListener('click', () => { closeModal('loginModal'); showModal('tempProfileLoginModal'); });
-document.getElementById('globalSearchTriggerBtn')?.addEventListener('click', () => showModal('searchModal'));
-document.getElementById('tempProfileGotItBtn')?.addEventListener('click', () => closeModal('tempProfileModal'));
-
-// Notifications
-const notificationsAreaEl = document.getElementById('notificationsArea');
-function showNotification(message, type = 'info', duration = 5000) {
-    if (!notificationsAreaEl) { console.warn("Notifications area not found"); return; }
-    const notification = document.createElement('div');
-    notification.className = `notification-item ${type}`;
-    notification.textContent = message;
-    notificationsAreaEl.appendChild(notification);
-    setTimeout(() => {
-        notification.style.animation = 'slideOutNotification 0.5s forwards';
-        setTimeout(() => notification.remove(), 500);
-    }, duration);
-}
-
-// Authentication Logic
-function updateUIForLoggedOutUser() {
-    if(loginBtnNavEl) loginBtnNavEl.style.display = 'inline-block';
-    if(registerBtnNavEl) registerBtnNavEl.style.display = 'inline-block';
-    if(logoutBtnNavEl) logoutBtnNavEl.style.display = 'none';
-    if(navProfileBtnEl) navProfileBtnEl.style.display = 'none';
-    if(navProfileBtnEl) navProfileBtnEl.innerHTML = `<i class="fa-solid fa-user-edit"></i> <span data-i18n="nav.profile">${i18next.t('nav.profile')}</span>`;
-    currentUserId = null;
-    isTempUser = false;
-    updateProfileDisplay();
-}
-
-function updateUIForTempUser(tempProfile) {
-    if(loginBtnNavEl) loginBtnNavEl.style.display = 'none';
-    if(registerBtnNavEl) registerBtnNavEl.style.display = 'none';
-    if(logoutBtnNavEl) logoutBtnNavEl.style.display = 'inline-block';
-    if(navProfileBtnEl) navProfileBtnEl.style.display = 'inline-block';
-    if(navProfileBtnEl) navProfileBtnEl.innerHTML = `<i class="fa-solid fa-user-clock"></i> ${tempProfile.username || i18next.t('nav.profile')}`;
-    currentUserId = tempProfile.id;
-    isTempUser = true;
-    updateProfileDisplay();
-}
-
-if (firebaseInitialized && auth) {
-    (async () => {
-        try {
-            if (initialAuthTokenFromGlobal) {
-                await signInWithCustomToken(auth, initialAuthTokenFromGlobal);
-                console.log("Successfully signed in with custom token.");
-            } else {
-                await signInAnonymously(auth);
-                console.log("Signed in anonymously as __initial_auth_token was not available.");
-            }
-        } catch (error) {
-            console.error("Error during initial sign-in (custom token or anonymous):", error);
-        }
-    })();
-
-    onAuthStateChanged(auth, user => {
-        showLoading(true);
-        console.log("Auth state changed. Firebase User:", user ? user.uid : "null");
-        const tempProfile = JSON.parse(localStorage.getItem('tempProfile'));
-
-        if (user) {
-            if(loginBtnNavEl) loginBtnNavEl.style.display = 'none';
-            if(registerBtnNavEl) registerBtnNavEl.style.display = 'none';
-            if(logoutBtnNavEl) logoutBtnNavEl.style.display = 'inline-block';
-            if(navProfileBtnEl) navProfileBtnEl.style.display = 'inline-block';
-            if(navProfileBtnEl) navProfileBtnEl.innerHTML = `<i class="fa-solid fa-user-circle"></i> ${user.displayName || i18next.t('nav.profile')}`;
-            localStorage.removeItem('tempProfile');
-            currentUserId = user.uid;
-            isTempUser = false;
-            closeAllModals();
-        } else if (tempProfile && tempProfile.id && tempProfile.expiresAt && new Date(tempProfile.expiresAt) > new Date()) {
-            updateUIForTempUser(tempProfile);
-        } else {
-            updateUIForLoggedOutUser();
-            if (tempProfile) localStorage.removeItem('tempProfile');
-        }
-        updateProfileDisplay();
-        initializeDynamicContent();
-        showLoading(false);
+loginBtnCtaEl?.addEventListener('click', () => showModal('loginModal'));
+registerBtnCtaEl?.addEventListener('click', () => showModal('registerModal'));
+createTempProfileFromLoginModalBtnEl?.addEventListener('click', () => {
+    closeModal('loginModal');
+    showModal('tempProfileModal');
+});
+loginWithTempProfileModalBtnEl?.addEventListener('click', () => {
+    closeModal('loginModal');
+    showModal('tempProfileLoginModal');
+});
+tempProfileGotItBtnEl?.addEventListener('click', () => closeModal('tempProfileModal'));
+globalSearchTriggerBtnEl?.addEventListener('click', () => showModal('searchModal'));
+benefitModalCloseBtnEl?.addEventListener('click', () => closeModal('benefitModal'));
+document.querySelectorAll('.modal .close-button').forEach(button => {
+    button.addEventListener('click', () => {
+        const modal = button.closest('.modal');
+        modal.style.display = 'none';
     });
-} else {
-    console.warn("Firebase Auth not initialized. Auth features will be limited.");
-    updateUIForLoggedOutUser();
-    showLoading(false);
-}
+});
 
+// Form Submissions
 document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!firebaseInitialized) {
@@ -1482,53 +1577,38 @@ async function displaySyncRequests() {
 // Search Functionality
 document.getElementById('searchForm')?.addEventListener('submit', (e) => {
     e.preventDefault();
-    const query = document.getElementById('searchInput').value;
-    showNotification(`Searching for: ${sanitizeInput(query)} (Feature coming soon)`, 'info');
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const searchResults = document.getElementById('searchResults');
+    if (!searchResults) return;
+
+    // Simple search implementation - extend this based on your data
+    const searchablePages = [
+        { name: i18next.t('nav.assessments'), url: 'assessments.html', keywords: ['assessments', 'compatibility', 'questions'] },
+        { name: i18next.t('nav.resources'), url: 'resources.html', keywords: ['resources', 'tools', 'support'] },
+        { name: i18next.t('nav.ugq'), url: 'ugq.html', keywords: ['my questions', 'custom questions', 'ugq'] },
+        { name: i18next.t('nav.profile'), url: 'profile.html', keywords: ['profile', 'my profile', 'account'] },
+        { name: i18next.t('nav.sync'), url: 'sync.html', keywords: ['couple sync', 'partner', 'sync'] }
+    ];
+
+    const results = searchablePages.filter(page =>
+        page.name.toLowerCase().includes(searchInput) ||
+        page.keywords.some(keyword => keyword.includes(searchInput))
+    );
+
+    searchResults.innerHTML = results.length > 0
+        ? results.map(result => `
+            <div class="search-result">
+                <a href="${result.url}">${result.name}</a>
+            </div>
+        `).join('')
+        : `<p>No results found for "${searchInput}".</p>`;
 });
 
-// Benefit Modal
-document.querySelectorAll('.benefit-card')?.forEach(card => {
-    card.addEventListener('click', () => {
-        const benefitKey = card.dataset.benefit;
-        benefitModalTitleEl.textContent = i18next.t(`landing.${benefitKey}.title`);
-        benefitModalDescriptionEl.textContent = i18next.t(`landing.${benefitKey}.description`);
-        showModal('benefitModal');
-    });
-});
-
-// Initialize Dynamic Content
-function initializeDynamicContent() {
+// Initialize Page-Specific Content
+document.addEventListener('DOMContentLoaded', () => {
     highlightActiveNavLink();
-    updateProfileDisplay();
-    displayResources();
-    displaySyncRequests();
-    if (document.getElementById('quickCompatAssessmentArea')) {
-        document.getElementById('quickCompatAssessmentArea').innerHTML = `
-            <div class="assessment-container">
-                <h3 data-i18n="assessments.quickCompat.title">${i18next.t('assessments.quickCompat.title')}</h3>
-                <p data-i18n="assessments.quickCompat.description">${i18next.t('assessments.quickCompat.description')}</p>
-                <div id="quickCompatLevelSelector">
-                    <button id="quickCompatBasicBtn" class="btn btn-primary">${i18next.t('assessments.quickCompat.basicBtn')}</button>
-                    <button id="quickCompatIntermediateBtn" class="btn btn-primary">${i18next.t('assessments.quickCompat.intermediateBtn')}</button>
-                    <button id="quickCompatAdvancedBtn" class="btn btn-primary">${i18next.t('assessments.quickCompat.advancedBtn')}</button>
-                </div>
-            </div>
-        `;
-        document.getElementById('quickCompatBasicBtn').addEventListener('click', () => startQuickCompat('basic'));
-        document.getElementById('quickCompatIntermediateBtn').addEventListener('click', () => startQuickCompat('intermediate'));
-        document.getElementById('quickCompatAdvancedBtn').addEventListener('click', () => startQuickCompat('advanced'));
-    }
-    if (document.getElementById('profileBuilderAssessmentArea')) {
-        document.getElementById('profileBuilderAssessmentArea').innerHTML = `
-            <div class="assessment-container">
-                <h3 data-i18n="assessments.profileBuilder.title">${i18next.t('assessments.profileBuilder.title')}</h3>
-                <p data-i18n="assessments.profileBuilder.description">${i18next.t('assessments.profileBuilder.description')}</p>
-                <button id="startProfileBuilderBtn" class="btn btn-primary">${i18next.t('assessments.profileBuilder.start')}</button>
-            </div>
-        `;
-        document.getElementById('startProfileBuilderBtn').addEventListener('click', startProfileBuilder);
-    }
+    if (document.getElementById('profile')) updateProfileDisplay();
+    if (document.getElementById('resourceCategoriesGrid')) displayResources();
+    if (document.getElementById('pendingSyncRequests')) displaySyncRequests();
     showNotification(i18next.t('notifications.welcome'), 'info');
-}
-
-document.addEventListener('DOMContentLoaded', initializeDynamicContent);
+});
